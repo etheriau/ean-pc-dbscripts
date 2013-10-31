@@ -1,0 +1,4 @@
+select EANHotelID,Name,City,Country, activepropertylist.PropertyCategory,
+PropertyCategoryDesc,SupplierType from activepropertylist
+INNER JOIN propertytypelist ON activepropertylist.PropertyCategory
+=propertytypelist.PropertyCategory;

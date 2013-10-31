@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<BCPFORMAT xmlns="http://schemas.microsoft.com/sqlserver/2004/bulkload/format" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <RECORD>
+  <FIELD ID="01" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="12" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="02" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="14" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="03" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="140" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="04" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="100" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="05" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="100" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="06" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="100" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="07" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="4" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="08" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="15" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="09" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="2" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="10" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="11" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="12" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="3" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="13" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="14" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="3" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="15" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="3" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="16" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="17" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="3" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="18" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="160" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="19" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="5" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="20" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="21" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="20" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="22" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="20" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="23" xsi:type="CharTerm" TERMINATOR="|" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+  <FIELD ID="24" xsi:type="CharTerm" TERMINATOR="\n" MAX_LENGTH="10" COLLATION="SQL_Latin1_General_CP1_CI_AS"/>
+ </RECORD>
+ <ROW>
+  <COLUMN SOURCE="01" NAME="EANHotelID" 		xsi:type="SQLINT" NULLABLE="YES"/>
+  <COLUMN SOURCE="02" NAME="SequenceNumber" 	xsi:type="SQLINT" NULLABLE="YES"/>
+  <COLUMN SOURCE="03" NAME="Name" 				xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="04" NAME="Address1" 			xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="05" NAME="Address2" 			xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="06" NAME="City" 				xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="07" NAME="StateProvince" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="08" NAME="PostalCode" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="09" NAME="Country" 			xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="10" NAME="Latitude" 			xsi:type="SQLNUMERIC" NULLABLE="YES" PRECISION="8" SCALE="5"/>
+  <COLUMN SOURCE="11" NAME="Longitude" 			xsi:type="SQLNUMERIC" NULLABLE="YES" PRECISION="8" SCALE="5"/>
+  <COLUMN SOURCE="12" NAME="AirportCode" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="13" NAME="PropertyCategory" 	xsi:type="SQLINT" NULLABLE="YES"/>
+  <COLUMN SOURCE="14" NAME="PropertyCurrency" 	xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="15" NAME="StarRating" 		xsi:type="SQLNUMERIC" NULLABLE="YES" PRECISION="2" SCALE="1"/>
+  <COLUMN SOURCE="16" NAME="Confidence" 		xsi:type="SQLINT" NULLABLE="YES"/>
+  <COLUMN SOURCE="17" NAME="SupplierType" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="18" NAME="Location" 			xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="19" NAME="ChainCodeID" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="20" NAME="RegionID" 			xsi:type="SQLINT" NULLABLE="YES"/>
+  <COLUMN SOURCE="21" NAME="HighRate" 			xsi:type="SQLNUMERIC" NULLABLE="YES" PRECISION="19" SCALE="4"/>
+  <COLUMN SOURCE="22" NAME="LowRate" 			xsi:type="SQLNUMERIC" NULLABLE="YES" PRECISION="19" SCALE="4"/>
+  <COLUMN SOURCE="23" NAME="CheckInTime" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  <COLUMN SOURCE="24" NAME="CheckOutTime" 		xsi:type="SQLNVARCHAR" NULLABLE="YES"/>
+  </ROW>
+</BCPFORMAT>

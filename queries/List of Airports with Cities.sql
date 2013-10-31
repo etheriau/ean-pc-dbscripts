@@ -1,0 +1,3 @@
+use eanprod;
+SELECT airportcoordinateslist.AirportCode, airportcoordinateslist.AirportName, citycoordinateslist.RegionName
+FROM airportcoordinateslist INNER JOIN citycoordinateslist ON airportcoordinateslist.MainCityID = citycoordinateslist.RegionID;

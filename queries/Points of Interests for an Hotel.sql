@@ -1,0 +1,9 @@
+# Point of Interest for a Property (POI)
+select pointsofinterestcoordinateslist.RegionID,pointsofinterestcoordinateslist.RegionName as POIName,pointsofinterestcoordinateslist.RegionNameLong as POINameLong,pointsofinterestcoordinateslist.SubClassification as POIClassification
+,pointsofinterestcoordinateslist.Latitude as POILatitude,pointsofinterestcoordinateslist.Longitude as POILongitude
+from activepropertylist
+JOIN parentregionlist
+ON activepropertylist.RegionID=parentregionlist.ParentRegionID
+JOIN pointsofinterestcoordinateslist
+ON parentregionlist.RegionID=pointsofinterestcoordinateslist.RegionID
+WHERE EANHotelID=4110;

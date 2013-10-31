@@ -1,0 +1,5 @@
+SELECT activepropertylist.EANHotelID,Name,StateProvince,City,Country,
+parentregionlist.RegionNameLong,parentregionlist.ParentRegionNameLong
+FROM activepropertylist,regioneanhotelidmapping,parentregionlist
+WHERE activepropertylist.EANHotelID = regioneanhotelidmapping.EANHotelID
+and regioneanhotelidmapping.RegionID = parentregionlist.RegionID;
