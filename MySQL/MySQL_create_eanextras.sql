@@ -617,10 +617,15 @@ TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (GeoNameID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ## index by Latitude, Longitude to use for geosearches
-CREATE INDEX geonames_geoloc ON geonames(Latitude, Longitude);
+## we add the FeatureCode to the index to spped up filtered searches
+CREATE INDEX geonames_geoloc ON geonames(Latitude, Longitude,FeatureCode);
 ## index to speed the usual search by name,country filtered by FeatureClass and code
 CREATE INDEX geonames_fastasciiname ON geonames(AsciiName, CountryCode, FeatureClass, FeatureCode);
 
+##################################################################
+## search what is close to a GPSPoint using Geonames table content
+## EXAMPLE IS: 286020 – Carin Hotel (London) GPSPoint ( 51.51274,-0.18305)
+## call sp_geonames_from_point(51.51274,-0.18305,1);
 ##################################################################
 DROP PROCEDURE IF EXISTS sp_geonames_from_point;
 DELIMITER $$

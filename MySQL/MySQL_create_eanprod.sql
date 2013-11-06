@@ -1,5 +1,5 @@
 ########################################################
-## MySQL_create_eanprod.sql                      v2.7 ##
+## MySQL_create_eanprod.sql                      v3.1 ##
 ## SCRIPT TO GENERATE EAN DATABASE IN MYSQL ENGINE    ##
 ## BE CAREFUL AS IT WILL ERASE THE EXISTING DATABASE  ##
 ## YOU CAN USE SECTIONS OF IT TO RE-CREATE TABLES     ##
