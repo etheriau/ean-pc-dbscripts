@@ -695,7 +695,8 @@ CREATE TABLE venere_airports (
 EANHotelID INT NOT NULL,
 AirportCode varchar(3),
 Distance INT,
-TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 DROP PROCEDURE IF EXISTS sp_find_venere_airports;
@@ -707,7 +708,7 @@ BEGIN
   DECLARE cAirportCode VARCHAR(3);
   DECLARE cCountryCode VARCHAR(2);
   DECLARE cLatitude,cLongitude NUMERIC(8,5);
-    DECLARE cur CURSOR FOR SELECT EANHotelID,Latitude,Longitude,Country FROM eanprod.activepropertylist WHERE SupplierType='EEM';
+    DECLARE cur CURSOR FOR SELECT EANHotelID,Latitude,Longitude,Country FROM eanprod.activepropertylist WHERE SupplierType='EEM' LIMIT 10;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
   OPEN cur;
   read_loop: LOOP
@@ -716,11 +717,11 @@ BEGIN
       LEAVE read_loop;
     END IF;
    SET @s = CONCAT('INSERT INTO eanextras.venere_airports (EANHotelID,AirportCode,Distance) ',
-            'VALUES (SELECT ',@cEANHotelID,' as EANHotelID,AirportCode,',
-                ' round( sqrt((POW(a.Latitude-',@cLatitude,',2)*68.1*68.1)+(POW(a.Longitude-',@cLongitude,',2)*53.1* 53.1))) AS distance', 
+            'VALUES (SELECT ',cEANHotelID,' as EANHotelID,AirportCode,',
+                ' round( sqrt((POW(a.Latitude-',cLatitude,',2)*68.1*68.1)+(POW(a.Longitude-',cLongitude,',2)*53.1* 53.1))) AS distance', 
 				 ' FROM eanprod.airportcoordinateslist AS a ',
-				 ' WHERE CountryCode=','\'',@cCountryCode,'\'',
-                ' ORDER BY distance ASC LIMIT 1);');
+				 ' WHERE CountryCode=','\'',cCountryCode,'\'',
+                ' ORDER BY distance ASC LIMIT 2);');
 	PREPARE stmt1 FROM @s; 
 	EXECUTE stmt1; 
 	DEALLOCATE PREPARE stmt1;
