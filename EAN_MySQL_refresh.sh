@@ -31,6 +31,9 @@ MYSQL_PROTOCOL=SOCKET
 MYSQL_PORT=3306
 ## directory under HOME_DIR
 FILES_DIR=eanfiles
+## retention period in DAYS for the log of ActivePropertyList changes
+LOG_DAYS=10
+
 ## Import files ###
 #####################################
 # the list should match the tables ##
@@ -75,31 +78,31 @@ PropertyFeesList
 PropertyMandatoryFeesList
 PropertyRenovationsList
 #
-# To Add a language set
+# To Add a language set, use this as a reference
 #
-ActivePropertyList_es_ES
-AliasRegionList_es_ES
-AreaAttractionsList_es_ES
-AttributeList_es_ES
-CountryList_es_ES
-DiningDescriptionList_es_ES
-PolicyDescriptionList_es_ES
-PropertyAttributeLink_es_ES
-PropertyDescriptionList_es_ES
-PropertyTypeList_es_ES
-RecreationDescriptionList_es_ES
-RegionList_es_ES
-RoomTypeList_es_ES
-SpaDescriptionList_es_ES
-WhatToExpectList_es_ES
-PropertyLocationList_es_ES
-PropertyAmenitiesList_es_ES
-PropertyRoomsList_es_ES
-PropertyBusinessAmenitiesList_es_ES
-PropertyNationalRatingsList_es_ES
-PropertyFeesList_es_ES
-PropertyMandatoryFeesList_es_ES
-PropertyRenovationsList_es_ES
+#ActivePropertyList_es_ES
+#AliasRegionList_es_ES
+#AreaAttractionsList_es_ES
+#AttributeList_es_ES
+#CountryList_es_ES
+#DiningDescriptionList_es_ES
+#PolicyDescriptionList_es_ES
+#PropertyAttributeLink_es_ES
+#PropertyDescriptionList_es_ES
+#PropertyTypeList_es_ES
+#RecreationDescriptionList_es_ES
+#RegionList_es_ES
+#RoomTypeList_es_ES
+#SpaDescriptionList_es_ES
+#WhatToExpectList_es_ES
+#PropertyLocationList_es_ES
+#PropertyAmenitiesList_es_ES
+#PropertyRoomsList_es_ES
+#PropertyBusinessAmenitiesList_es_ES
+#PropertyNationalRatingsList_es_ES
+#PropertyFeesList_es_ES
+#PropertyMandatoryFeesList_es_ES
+#PropertyRenovationsList_es_ES
 )
 
 ## home where the process will execute
@@ -194,6 +197,8 @@ do
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erase_common();"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erase_deleted();"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_changedrecords();"
+			### erase records before retention period
+			$CMDSP_MYSQL --execute="DELETE FROM log_activeproperty_changes WHERE TimeStamp < DATE_SUB(NOW(), INTERVAL $LOG_DAYS DAY);"
 			echo "Log for ActivePropertyList done."
         fi
     fi
