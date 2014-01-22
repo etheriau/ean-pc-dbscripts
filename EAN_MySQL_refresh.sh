@@ -32,7 +32,7 @@ MYSQL_PORT=3306
 ## directory under HOME_DIR
 FILES_DIR=eanfiles
 ## retention period in DAYS for the log of ActivePropertyList changes
-LOG_DAYS=10
+LOG_DAYS=30
 
 ## Import files ###
 #####################################
