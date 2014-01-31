@@ -547,14 +547,14 @@ DELIMITER ;
 ##this version will allow you to restrict the results:
 ##stay in an Specific PostalCode
 ##################################################################
-DROP PROCEDURE IF EXISTS sp_hotels_from_point_restrict_zip;
+DROP PROCEDURE IF EXISTS sp_hotels_from_point_restrict_postal;
 DELIMITER $$
-CREATE PROCEDURE sp_hotels_from_point_restrict_zip(IN lat double,lon double, maxdist int, postalcode varchar(60))
+CREATE PROCEDURE sp_hotels_from_point_restrict_postal(IN lat double,lon double, maxdist int, postalcode varchar(60))
 BEGIN
 SET @s = CONCAT('SELECT EanHotelID,Name,Address1,Address2,City,StateProvince,PostalCode,Country,StarRating,LowRate,HighRate,Latitude,Longitude,',
                 ' round( sqrt((POW(a.Latitude-',lat,',2)*68.1*68.1)+(POW(a.Longitude-',lon,',2)*53.1* 53.1))) AS distance', 
 				 ' FROM activepropertylist AS a ',
-                ' WHERE PostalCode=\'',postalcode,
+                ' WHERE REPLACE(PostalCode," ","")=\'',postalcode,
                 '\' HAVING distance < ',maxdist,
                 ' ORDER BY distance ASC;');
 PREPARE stmt1 FROM @s; 
