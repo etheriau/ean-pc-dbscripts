@@ -26,7 +26,5 @@ The Partners will need to run:
  
 Please contact me with any questions / concern / suggestions.
 
-Jon Arce
-Partner Connect
-Sr. Integration Manager
-jarce@expedia.com
+Partner:Connect Team
+apihelp@expedia.com
