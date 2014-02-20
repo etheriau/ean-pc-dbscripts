@@ -632,20 +632,38 @@ DELIMITER ;
 ##################################################################
 ## STEP 2 - add Added Records to log table
 ## must be called AFTER refreshing activepropertylist
+## will classify as added / reactivated
 ##################################################################
 DROP PROCEDURE IF EXISTS sp_log_addedrecords;
 DELIMITER $$
 CREATE PROCEDURE sp_log_addedrecords()
 BEGIN
-## Identify Added Records
-## those are NOT in the old-table
+## save maximum EANHotelID from last run
+## to identify if records are NEW ADDED or REACTIVATIONS
+SELECT @max_eanid:=MAX(EANHotelID) FROM oldactivepropertylist;
+#DECLARE mymaxid INT;
+#SELECT MAX(EANHotelID)INTO mymaxid FROM oldactivepropertylist LIMIT 1,1;
+
+## Identify Reactivated Records
+## those that are NOT in the old-table
+## 	EANHotelID,FieldName,FieldType,FieldValue,TimeStamp
+INSERT INTO log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
+SELECT NOW.EANHotelID,'EANHotelID' AS FieldName,'int' AS FieldType, NULL as FieldValueOld, 'reactivated record' as FieldValueNew
+FROM oldactivepropertylist AS OLD
+RIGHT JOIN activepropertylist AS NOW
+ON OLD.EANHotelID=NOW.EANHotelID
+WHERE OLD.EANHotelID IS NULL AND NOW.EANHotelID <= @max_eanid;
+
+## Identify Newly Added Records
+## those that are NOT in the old-table
 ## 	EANHotelID,FieldName,FieldType,FieldValue,TimeStamp
 INSERT INTO log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
 SELECT NOW.EANHotelID,'EANHotelID' AS FieldName,'int' AS FieldType, NULL as FieldValueOld, 'added record' as FieldValueNew
 FROM oldactivepropertylist AS OLD
 RIGHT JOIN activepropertylist AS NOW
 ON OLD.EANHotelID=NOW.EANHotelID
-WHERE OLD.EANHotelID IS NULL;
+WHERE OLD.EANHotelID IS NULL AND NOW.EANHotelID > @max_eanid;
+
 END 
 $$
 DELIMITER ;
