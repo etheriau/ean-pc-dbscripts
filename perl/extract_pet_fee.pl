@@ -26,10 +26,10 @@ my $dsn = "DBI:mysql:$database:$host:$port";
 my $dbh = DBI->connect($dsn, $user, $pw)  or die "Cannot connect to MySQL server\n";
 
 # PRINT HEADER
-print "EANHotelID|Type|Desc\n";
+print "EANHotelID|Type|Currency|Amount|Frequency\n";
 
 # DEFINE A MySQL QUERY
-my $query = "select EANHotelID,PropertyFeesDescription from propertyfeeslist where PropertyFeesDescription LIKE '%pet%' LIMIT 100";
+my $query = "select EANHotelID,PropertyFeesDescription from propertyfeeslist where PropertyFeesDescription LIKE '%pet%'";
 my $PetFee = $dbh->prepare($query);
 
 # EXECUTE THE QUERY
@@ -40,7 +40,8 @@ while(my $RowPetFee = $PetFee->fetchrow_hashref()) {
    my $htmlfees = "$RowPetFee->{PropertyFeesDescription}";
    
    my $lineoftext = "";
-   my $currency ="";
+   my $currency = "";
+   my $amount="";
  
    #parsing from an UTF-8 encoded string, decoding it first
    utf8::decode($htmlfees);
@@ -54,15 +55,27 @@ while(my $RowPetFee = $PetFee->fetchrow_hashref()) {
 		# regex to match Pet fee: ONLY at the begging of line & upper or lowercase
       	if ($lineoftext =~ /\A(?i)Pet fee:/) {
       	   printf "$EANHotelID|Fee|";
+      	   # erase the "Pet Fee: " part
       	   $lineoftext =~ s/\A(?i)Pet fee: //;
-      	   $currency=substr($lineoftext,1,3);
-      	   $lineoftext=substr($linr
+      	   $currency=substr($lineoftext,0,index($lineoftext,' '));
+      	   $lineoftext=substr($lineoftext,(index($lineoftext,' ')+1));
+      	   print $currency . "|";
+      	   $amount=substr($lineoftext,0,index($lineoftext,' '));
+      	   $lineoftext=substr($lineoftext,(index($lineoftext,' ')+1));
+      	   print $amount . "|";
       	   print $lineoftext;
       	   printf "\n";
       	}# if contains the 'Pet Fee'
       	if ($lineoftext =~ /\A(?i)Pet deposit:/) {
       	   printf "$EANHotelID|Deposit|";
+      	   # erase the "Pet Deposit: " part
       	   $lineoftext =~ s/\A(?i)Pet Deposit: //;
+      	   $currency=substr($lineoftext,0,index($lineoftext,' '));
+      	   $lineoftext=substr($lineoftext,(index($lineoftext,' ')+1));
+      	   print $currency . "|";
+      	   $amount=substr($lineoftext,0,index($lineoftext,' '));
+      	   $lineoftext=substr($lineoftext,(index($lineoftext,' ')+1));
+      	   print $amount . "|";
       	   print $lineoftext;
       	   printf "\n";
       	}# if contains the 'Pet Deposit'
