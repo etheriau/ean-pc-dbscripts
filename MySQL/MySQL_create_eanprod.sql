@@ -109,7 +109,7 @@ CREATE TABLE countrylist
 (
 	CountryID INT NOT NULL,
 	LanguageCode VARCHAR(5),
-	CountryName VARCHAR(256),
+	CountryName VARCHAR(250),
 	CountryCode VARCHAR(2) NOT NULL,
 	Transliteration VARCHAR(256),
 	ContinentID INT,
