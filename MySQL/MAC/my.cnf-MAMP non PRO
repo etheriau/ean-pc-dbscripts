@@ -1,5 +1,4 @@
-# modified for Regular Downloaded Packaged.dmg format installation of MySQL MAC OS
-# this versions goes in /etc/my.cnf
+# modified for MAMP on MAC OS
 #
 #default-collation 	= utf8_unicode_ci
 #
@@ -9,7 +8,7 @@
 # The MySQL database server configuration file.
 #
 # You can copy this to one of:
-# - "/etc/my.cnf" to set global options,
+# - "/etc/mysql/my.cnf" to set global options,
 # - "~/.my.cnf" to set user-specific options.
 # 
 # One can use all long options that the program supports.
@@ -24,8 +23,8 @@
 # escpecially if they contain "#" chars...
 # Remember to edit /etc/mysql/debian.cnf when changing the socket location.
 [client]
-port			= 3306
-socket			= /tmp/mysql.sock
+port			= 8889
+socket			= /Applications/MAMP/tmp/mysql/mysql.sock
 default-character-set	= utf8
 
 # Here is entries for some specific programs
@@ -33,7 +32,7 @@ default-character-set	= utf8
 
 # This was formally known as [safe_mysqld]. Both versions are currently parsed.
 [mysqld_safe]
-socket			= /tmp/mysql.sock
+socket			= /Applications/MAMP/tmp/mysql/mysql.sock
 nice			= 0
 
 [mysqld]
@@ -41,15 +40,15 @@ nice			= 0
 # * Basic Settings
 #
 user			= mysql
-pid-file		= /tmp/mysql.pid
-socket			= /tmp/mysql.sock
-port			= 3306
-basedir			= /usr/local/mysql
-datadir			= /usr/local/mysql/data
-tmpdir			= /tmp/
-lc-messages-dir		= /usr/local/mysql/share/english
+pid-file		= /Applications/MAMP/tmp/mysql/mysql.pid
+socket			= /Applications/MAMP/tmp/mysql/mysql.sock
+port			= 8889
+basedir			= /Applications/MAMP
+datadir			= /Applications/MAMP/db/mysql
+tmpdir			= /Applications/MAMP/tmp/mysql
+lc-messages-dir		= /Applications/MAMP/Library/share
 lower_case_table_names	= 0
-log-error		= /tmp/mysql.log
+log-error		= /Applications/MAMP/logs/mysql_error_log
 character-set-server 	= utf8
 collation-server 	= utf8_unicode_ci
 init-connect		= 'SET NAMES utf8'
@@ -68,8 +67,7 @@ bind-address		= 0.0.0.0
 # * Fine Tuning
 #
 key_buffer		= 16M
-#max_allowed_packet=16M, but not working for client SQLWorkbench (Java)
-max_allowed_packet      = 1M
+max_allowed_packet	= 16M
 thread_stack		= 192K
 thread_cache_size       = 8
 # This replaces the startup script and checks MyISAM tables if needed
