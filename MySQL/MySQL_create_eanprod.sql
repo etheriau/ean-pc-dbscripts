@@ -19,6 +19,7 @@ GRANT ALL ON eanprod.* TO 'eanuser'@'localhost' IDENTIFIED BY 'Passw@rd1';
 
 ## REQUIRED IN WINDOWS as we do not use STRICT_TRANS_TABLE for the upload process
 SET @@global.sql_mode= '';
+SET GLOBAL sql_mode='';
 
 USE eanprod;
 

@@ -18,6 +18,10 @@ MYSQL_DIR=/usr/bin/
 # for simplicity I added the MYSQL bin path to the Windows 
 # path environment variable, for Windows set it to ""
 #MYSQL_DIR=""
+# after MySQL 5.6+ we depend on the mysql_config_editor to
+# save the connections credentials (host, user, password)
+# then we can use: --login-path={name of your connection}
+MYSQL_LOGINPATH=local
 #MySQL user, password, host (Server)
 MYSQL_USER=eanuser
 MYSQL_PASS=Passw@rd1
@@ -136,7 +140,9 @@ cd ${FILES_DIR}
 ### Parameters that you may need:
 ### If you use LOW_PRIORITY, execution of the LOAD DATA statement is delayed until no other clients are reading from the table.
 CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=${MYSQL_DB}"
-
+# for version 5.6.6+ you will need this line instead to use stored credentials
+#CMD_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=${MYSQL_DB}"
+#
 ### Download Data ###
 echo "Downloading files using wget..."
 for FILE in ${FILES[@]}
@@ -176,6 +182,8 @@ do
 			### Run stored procedures as required for extra functionality       ###
 			### you can use this section for your own stuff                     ###
 			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			# for version 5.6.6+ you will need this line instead to use stored credentials
+			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_createcopy();"
 			echo "ActivePropertyList backup done."
         fi
@@ -192,6 +200,8 @@ do
 			### Run stored procedures as required for extra functionality       ###
 			### you can use this section for your own stuff                     ###
 			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			# for version 5.6.6+ you will need this line instead to use stored credentials
+			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_addedrecords();"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erasedrecords();"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_erase_common();"
@@ -205,17 +215,21 @@ do
 done
 echo "Updates done."
 
-echo "Running Stored Procedures..."
+echo "Running Extras ... Stored Procedures..."
 ### Run stored procedures as required for extra functionality       ###
 ### you can use this section for your own stuff                     ###
 CMD_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanextras"
-$CMD_MYSQL --execute="CALL eanextras.sp_fill_fasttextsearch();"
-echo "Stored Procedures done."
+# for version 5.6.6+ you will need this line instead to use stored credentials
+#CMD_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanextras"
+#$CMD_MYSQL --execute="CALL eanextras.sp_fill_fasttextsearch();"
+echo "Extras Stored Procedures done."
 
 
 echo "Verify database against files..."
 ### Verify entries in tables against files ###
 CMD_MYSQL="${MYSQL_DIR}mysqlshow --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST}"
+# for version 5.6.6+ you will need this line instead to use stored credentials
+#CMD_MYSQL="${MYSQL_DIR}mysqlshow --login-path=${MYSQL_LOGINPATH} --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST}"
 $CMD_MYSQL
 
 ### find the amount of records per datafile
@@ -234,9 +248,6 @@ done
 echo "+---------------------------------+----------+------------+"
 echo "Verify done."
 
-
-echo "script (import_db.sh) done."
-
 ## display endtime for the script
 ENDTIME=$(date +%s)
 secs=$(( $ENDTIME - $STARTTIME ))
@@ -244,3 +255,4 @@ h=$(( secs / 3600 ))
 m=$(( ( secs / 60 ) % 60 ))
 s=$(( secs % 60 ))
 printf "total script time: %02d:%02d:%02d\n" $h $m $s
+echo "script (import_db.sh) done."

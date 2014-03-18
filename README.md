@@ -11,6 +11,10 @@ The Partners will need to run:
 2. MySQL_extend_eanprod_xx_XX.sql - This will add tables to support extra languages, it will need to be edited to the proper LOCALE information (like es_es for Spanish/Spain).
 3. EAN_MySQL_refresh.sh - The script that updates the database, the top lines will need to be adjusted for database name, dbserver, user name, password, etc. Run this to create the database.
 
+ MySQL Version 5.6+ changed the security model, you need to FIRST use:
+ mysql_config_editor set --login-path=local --host=localhost --user=localuser –password
+ then uncomment the lines with the remarks that will use --login-path parameter instead of --user, --password and --host .
+
 /Queries - Contain multiple queries that show how to relate the data in the database.
 
 /MS-SQL - Script and database creation script. IT ONLY will do the activepropertylist - it is unfinished, but all the working parts are there, partners just need to add the other 33 tables.
@@ -32,6 +36,7 @@ The Partners will need to run:
 /MAC - Mac adjusted versions of the scripts
  It include my compiled version of the wget utility that is REQUIRED for this scripts to work.
  
+  
 (extras) anything refering to eanextras are experimental database where I test process and data out. You can find the older V1 structures there as well as currently the geonames & ourairports data and geo-search stored procedures.
 
 ** Use of these scripts are at your own risk. The scripts are provided “as is” without any warranty of any kind and Expedia disclaims any and all liability regarding any use of the scripts. **
