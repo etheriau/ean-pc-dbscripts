@@ -103,6 +103,8 @@ CREATE TABLE pointsofinterestcoordinateslist
 
 ## index by RegionID to use as relational key
 CREATE INDEX idx_pointsofinterestcoordinateslist_regionid ON pointsofinterestcoordinateslist(RegionID);
+## index by Latitude, Longitude to use for geosearches
+CREATE INDEX idx_poi__geoloc ON pointsofinterestcoordinateslist(Latitude, Longitude);
 
 
 DROP TABLE IF EXISTS countrylist;
@@ -510,10 +512,10 @@ BEGIN
 SELECT EanHotelID,Name,Address1,Address2,City,StateProvince,
 	   PostalCode,Country,StarRating,LowRate,HighRate,Latitude,Longitude,
 # this calculate the distance from the given longitude, latitude
-    round( sqrt( 
+    sqrt( 
         (POW(a.Latitude - lat, 2)* 68.1 * 68.1) + 
         (POW(a.Longitude - lon, 2) * 53.1 * 53.1) 
-     )) AS distance
+     ) AS distance
 FROM activepropertylist AS a 
 WHERE 1=1
 HAVING distance < maxdist
@@ -587,6 +589,33 @@ DEALLOCATE PREPARE stmt1;
 END 
 $$
 DELIMITER ;
+
+##################################################################
+##this Stored Procedure will use the Point of Interest table
+## use like: CALL sp_pois_from_point(40.451585,-3.690375,2);
+## if you need more results just change the LIMIT number or create a parameter for it
+## NO Heliport or Train Stations Included
+## MAXREC - how many to return (usefull when too close to a large regional to get the international also)
+##################################################################
+DROP PROCEDURE IF EXISTS sp_pois_from_point;
+DELIMITER $$
+CREATE PROCEDURE sp_pois_from_point(IN lat double,lon double, maxdist int)
+BEGIN
+SELECT RegionNameLong,RegionName,
+# this calculate the distance from the given longitude, latitude
+    round( sqrt( 
+        (POW(a.Latitude - lat, 2)* 68.1 * 68.1) + 
+        (POW(a.Longitude - lon, 2) * 53.1 * 53.1) 
+     )) AS distance
+FROM pointsofinterestcoordinateslist AS a 
+WHERE 1=1
+HAVING distance < maxdist
+ORDER BY distance ASC;
+# to use LIMIT you need to use a prepared statement to avoid errors
+END 
+$$
+DELIMITER ;
+
 ##################################################################
 ## Stored Procedure & structures to create a log of changes
 ## for the activepropertylist Table

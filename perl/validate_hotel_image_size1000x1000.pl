@@ -1,5 +1,5 @@
 #!/opt/local/bin/perl -w
-# Perl Script to validate the URLs of Images
+# Perl Script to validate the URLs of Images (SIZE 1000x1000 _z)
 # will be used to validate the URLs in the Database files
 #
 # You will need the LWP library use command to install
@@ -37,15 +37,15 @@ while(my $RowImagesURL = $ImagesURL->fetchrow_hashref()) {
    my $EANHotelID = "$RowImagesURL->{EANHotelID}";
    my $Caption = "$RowImagesURL->{Caption}";
    my $URL = "$RowImagesURL->{URL}";
-   my $ThumbnailURL = "$RowImagesURL->{ThumbnailURL}";
 
 # check if images are valid using LWP library
-	my $verifyURL = &img_check(substr($URL, 0, -3) . "jpg");
-	my $verifyThumbnailURL = &img_check(substr($ThumbnailURL, 0, -3) . "jpg");
+printf "> $URL\n";
+	my $verifyURL = &img_check(substr($URL, 0, -5) . "z.jpg");
 
 # print the result line, only if at least one of the images fail to verify
-    if (not($verifyURL or $verifyThumbnailURL)) { 
-		printf "$EANHotelID | $Caption | $URL | $ThumbnailURL | $verifyURL | $verifyThumbnailURL\n";
+    if (not($verifyURL)) {
+       $URL = substr($URL, 0, -5) . "z.jpg";  
+		printf "$EANHotelID | $Caption | $URL | $verifyURL\n";
 	} # if 
 
 } # while Images URLs in the query

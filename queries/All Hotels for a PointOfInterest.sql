@@ -1,0 +1,9 @@
+# All hotels for a PointOfInterest
+use eanprod;
+SELECT pointsofinterestcoordinateslist.RegionName, pointsofinterestcoordinateslist.RegionID,activepropertylist.EANHotelID,activepropertylist.Name,City,StateProvince,Country
+from pointsofinterestcoordinateslist 
+JOIN regioneanhotelidmapping
+ON pointsofinterestcoordinateslist.RegionID=regioneanhotelidmapping.RegionID
+JOIN activepropertylist
+ON regioneanhotelidmapping.EANHotelID=activepropertylist.EANHotelID
+WHERE pointsofinterestcoordinateslist.RegionName LIKE "%American Airlines Arena%";

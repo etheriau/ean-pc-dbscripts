@@ -36,15 +36,15 @@ USE eanextras;
 ## as we move this table to RAM for faster processing
 ## DEFINITION:
 ## Name - fast text search name to use
-## SearchBy - what to pass to the API for searching (HotelId, DestinationId,GPS)
-## Type - 1 = HotelId, 2-Cities (GPS), 3-Airports (GPS), 4-Landmarks (GPS)
+## SearchBy - what to pass to the API for searching (Name,GPS,HotelID)
+## Type - 1=Cities, 2=Landmarks, 3=Airports, 4=HotelId
 ## GPS are comma separated (123.434336,-54443.767445)
 DROP TABLE IF EXISTS fasttextsearch;
 CREATE TABLE fasttextsearch
 (
 	Name VARCHAR(510),
-	SearchBy VARCHAR(100),
-	Type SMALLINT,
+	SearchBy VARCHAR(510),
+	Type CHAR(1),
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
@@ -55,31 +55,45 @@ CREATE FULLTEXT INDEX ft_name ON fasttextsearch(Name);
 ## STORED PROCEDURE fill_fasttextsearch
 ##
 ## to be called after the database refresh process ends
-## is just EMPTY THE TABLE, as it re-creates ultra-fast
 
 DROP PROCEDURE IF EXISTS sp_fill_fasttextsearch;
 DELIMITER $$
 CREATE PROCEDURE sp_fill_fasttextsearch()
 BEGIN
  TRUNCATE TABLE fasttextsearch;
- INSERT INTO fasttextsearch (Name, SearchBy, Type) 
-  SELECT Name, EANHotelID AS SearchBy,"1" AS Type FROM eanprod.activepropertylist;
- INSERT INTO fasttextsearch (Name, SearchBy, Type) 
-  SELECT RegionName AS Name, CONCAT(CenterLatitude, "," , CenterLongitude) AS SearchBy, "2" AS Type FROM eanprod.regioncentercoordinateslist;
-## using the EAN airport table 
-##INSERT INTO fasttextsearch (Name, SearchBy, Type) 
-##  SELECT AirportName AS Name, CONCAT(Latitude, "," , Longitude) AS SearchBy, "3" AS Type FROM eanprod.airportcoordinateslist;
+## TYPE 'C'=Cities
+## short down 'United States of America' for 'USA'
+ 	INSERT INTO fasttextsearch (Name, SearchBy, Type) 
+  	SELECT REPLACE(RegionName,'United States of America', 'USA') AS Name, RegionName AS SearchBy, 'C' AS Type 
+  	FROM eanprod.citycoordinateslist;
 
-## using the World eanextras.airports
-## if you filter to only include type_large and _medium, result set is similar to EAN
+
+## TYPE 'A'=Airport
+	INSERT INTO fasttextsearch (Name, SearchBy, Type)
+	SELECT AirportName AS Name, IF(LOCATE('(',RegionNameLong)>0,
+		CONCAT(LEFT(RegionNameLong,LOCATE('(',RegionNameLong)-2),RIGHT(RegionNameLong,LENGTH(RegionNameLong)-LOCATE(')',RegionNameLong))),
+		RegionNameLong) AS SearchBy,  'A' AS Type
+	FROM eanprod.airportcoordinateslist
+	JOIN eanprod.parentregionlist
+	ON eanprod.airportcoordinateslist.MainCityID = eanprod.parentregionlist.RegionID;
+
+## TYPE 'L'=Landmarks  
 INSERT INTO fasttextsearch (Name, SearchBy, Type) 
-  SELECT AirportName AS Name, CONCAT(Latitude, "," , Longitude) AS SearchBy, "3" AS Type FROM eanextras.airports where AirportType = 'large_airport' or AirportType = 'medium_airport';
-  
-INSERT INTO fasttextsearch (Name, SearchBy, Type) 
-  SELECT RegionNameLong AS Name, CONCAT(Latitude, "," , Longitude) AS SearchBy, "4" AS Type FROM eanprod.pointsofinterestcoordinateslist;
+  SELECT RegionNameLong AS Name, CONCAT(Latitude, "," , Longitude) AS SearchBy, 'L' AS Type 
+  FROM eanprod.pointsofinterestcoordinateslist;
+
+## TYPE 'P'=HotelID
+ INSERT INTO fasttextsearch (Name, SearchBy, Type) 
+  SELECT Name, EANHotelID AS SearchBy,'P' AS Type FROM eanprod.activepropertylist;
+
 END
 $$
 DELIMITER ;
+
+## using the World eanextras.airports
+## if you filter to only include type_large and _medium, result set is similar to EAN
+##INSERT INTO fasttextsearch (Name, SearchBy, Type) 
+##  SELECT AirportName AS Name, CONCAT(Latitude, "," , Longitude) AS SearchBy, "3" AS Type FROM eanextras.airports where AirportType = 'large_airport' or AirportType = 'medium_airport';
 
 ########################################################
 ## airports
@@ -417,106 +431,7 @@ NearbyAttractions TEXT,
 	PRIMARY KEY (HotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-##############
-### Venere ###
-##############
 
-## Venere Active Properties 
-
-DROP TABLE IF EXISTS venereactive;
-CREATE TABLE venereactive (
-HotelID INT NOT NULL,
-Name VARCHAR(70),
-AirportCode VARCHAR(3),
-Address1 VARCHAR(50),
-Address2 VARCHAR(50),
-Address3 VARCHAR(50),
-City VARCHAR(50),
-StateProvince VARCHAR(50),
-Country VARCHAR(50),
-PostalCode VARCHAR(15),
-Longitude NUMERIC(8,5),
-Latitude NUMERIC(8,5),
-LowRate NUMERIC(19,4),
-HighRate NUMERIC(19,4),
-MarketingLevel INT,
-Confidence INT,
-HotelModified varchar(32),
-PropertyType VARCHAR(3),
-TimeZone VARCHAR(80),
-GMTOffset VARCHAR(6),
-YearPropertyOpened varchar(256),
-YearPropertyRenovated varchar(256),
-NativeCurrency varchar(3),
-NumberOfRooms int,
-NumberOfSuites int,
-NumberOfFloors int,
-CheckInTime varchar(10),
-CheckOutTime varchar(10),
-HasValetParking varchar(1),
-HasContinentalBreakfast varchar(1),
-HasInRoomMovies varchar(1),
-HasSauna varchar(1),
-HasWhirlpool varchar(1),
-HasVoiceMail varchar(1),
-Has24HourSecurity varchar(1),
-HasParkingGarage varchar(1),
-HasElectronicRoomKeys varchar(1),
-HasCoffeeTeaMaker varchar(1),
-HasSafe varchar(1),
-HasVideoCheckOut varchar(1),
-HasRestrictedAccess varchar(1),
-HasInteriorRoomEntrance varchar(1),
-HasExteriorRoomEntrance varchar(1),
-HasCombination varchar(1),
-HasFitnessFacility varchar(1),
-HasGameRoom varchar(1),
-HasTennisCourt varchar(1),
-HasGolfCourse varchar(1),
-HasInHouseDining varchar(1),
-HasInHouseBar varchar(1),
-HasHandicapAccessible varchar(1),
-HasChildrenAllowed varchar(1),
-HasPetsAllowed varchar(1),
-HasTVInRoom varchar(1),
-HasDataPorts varchar(1),
-HasMeetingRooms varchar(1),
-HasBusinessCenter varchar(1),
-HasDryCleaning varchar(1),
-HasIndoorPool varchar(1),
-HasOutdoorPool varchar(1),
-HasNonSmokingRooms varchar(1),
-HasAirportTransportation varchar(1),
-HasAirConditioning varchar(1),
-HasClothingIron varchar(1),
-HasWakeUpService varchar(1),
-HasMiniBarInRoom varchar(1),
-HasRoomService varchar(1),
-HasHairDryer varchar(1),
-HasCarRentDesk varchar(1),
-HasFamilyRooms varchar(1),
-HasKitchen varchar(1),
-HasMap varchar(1),
-PropertyDescription TEXT,
-GDSChainCode  varchar(10),
-GDSChaincodeName  varchar(70),
-DestinationID varchar(60),
-DrivingDirections TEXT,
-NearbyAttractions TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (HotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-## Venere Properties Description
-
-DROP TABLE IF EXISTS veneredescription;
-CREATE TABLE veneredescription (
-HotelID INT NOT NULL,
-MarketingLevel INT,
-PropertyDescription TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (HotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 #########################
 ### EAN Special Files ###

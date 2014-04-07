@@ -116,24 +116,6 @@ echo "erasing old records from ($tablename)..."
 $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
 
 echo -e "\n"
-tablename="propertysuppliermapping"
-echo "Downloading and unzipping (Property Supplier Mapping)..."
-wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/V2/PropertySupplierMapping.zip
-unzip -L -o PropertySupplierMapping.zip
-if [ -f PropertySupplierMapping.txt ]
-then
-   echo "renaming to lowercase"
-   mv -f PropertySupplierMapping.txt propertysuppliermapping.txt
-fi
-## file is (CR) only - like OLD MAC txt files, convert to Unix
-echo "Cleaning up ($tablename.txt)..."
-dos2unix -c mac propertysuppliermapping.txt
-echo "Uploading (property supplier mapping) to ($MYSQL_DB.$tablename) with REPLACE option..."
-$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY ',' IGNORE 1 LINES;"
-echo "erasing old records from ($tablename)..."
-$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
-
-echo -e "\n"
 tablename="destinationids"
 echo "Downloading and unzipping (Destination IDs)..."
 wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Destination_Detail.zip
@@ -173,46 +155,6 @@ $CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE
 echo "erasing old records from ($tablename)..."
 $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
 
-echo -e "\n"
-tablename="venereactive"
-echo "Downloading and unzipping (Venere Active)..."
-wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Venere_Active.zip
-unzip -L -o Venere_active.zip
-### the files are named with the dates, so let's rename it
-#mv -f venere_active*.txt venereactive.txt
-## needed to strip out some strange characters
-echo "Cleaning up ($tablename.txt)..."
-#dos2unix venereactive.txt
-#this command will let pass:
-#octal 11: tab, octal 12: linefeed, octal 15: carriage return
-#octal 40 through octal 176: all the "good" keyboard characters
-#but we extend it to Octal 251 (Ascii 169) so it will include the accented characters
-tr -cd "\11\12\15\40-\251" < venere_active*.txt > venereactive.txt
-#tr -cd "[:print:]" < venere_active*.txt > venereactive.txt
-rm venere_active*.txt
-echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
-$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
-## we need to erase the records, NOT updated today
-echo "erasing old records from ($tablename)..."
-$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
-
-echo -e "\n"
-tablename="veneredescription"
-echo "Downloading and unzipping (Venere Descriptions)..."
-wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Venere_description.zip
-unzip -L -o Venere_description.zip
-### the files are named with the dates, so let's rename it
-#mv -f venere_description*.txt veneredescription.txt
-## needed to strip out some strange characters
-echo "Cleaning up ($tablename.txt)..."
-tr -cd "\11\12\15\40-\251" < venere_description*.txt > veneredescription.txt
-rm venere_description*.txt
-#dos2unix veneredescription.txt
-echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
-$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
-## we need to erase the records, NOT updated today
-echo "erasing old records from ($tablename)..."
-$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
 
 echo -e "\n"
 tablename="vacationrentalsactive"
