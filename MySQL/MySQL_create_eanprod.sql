@@ -1,5 +1,5 @@
 ########################################################
-## MySQL_create_eanprod.sql                      v3.1 ##
+## MySQL_create_eanprod.sql                      v3.7 ##
 ## SCRIPT TO GENERATE EAN DATABASE IN MYSQL ENGINE    ##
 ## BE CAREFUL AS IT WILL ERASE THE EXISTING DATABASE  ##
 ## YOU CAN USE SECTIONS OF IT TO RE-CREATE TABLES     ##
@@ -7,15 +7,21 @@
 ## table names are lowercase so it will work  in all  ## 
 ## platforms the same.                                ##
 ########################################################
-
+##
+## YOU NEED TO CONNECT AS ROOT FOR THIS SCRIPT TO WORK PROPERLY
+##
 DROP DATABASE IF EXISTS eanprod;
 ## specify utf8 / ut8_unicode_ci to manage all languages properly
 ## updated from files contain those characters
 CREATE DATABASE eanprod CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-## users permisions
+## users permisions, you must run as root to get the user this permissions
+##
 GRANT ALL ON eanprod.* TO 'eanuser'@'%' IDENTIFIED BY 'Passw@rd1';
 GRANT ALL ON eanprod.* TO 'eanuser'@'localhost' IDENTIFIED BY 'Passw@rd1';
+GRANT SUPER ON *.* to eanuser@'localhost' IDENTIFIED BY 'Passw@rd1';
+FLUSH PRIVILEGES;
+
 
 ## REQUIRED IN WINDOWS as we do not use STRICT_TRANS_TABLE for the upload process
 SET @@global.sql_mode= '';
@@ -699,7 +705,7 @@ $$
 DELIMITER ;
 
 ##################################################################
-## STEP 3 - add Erased Records to log table
+## STEP 3 - add Erased Records as (stop-sell) to log table
 ## must be called AFTER refreshing activepropertylist
 ##################################################################
 DROP PROCEDURE IF EXISTS sp_log_erasedrecords;
@@ -710,7 +716,7 @@ BEGIN
 ## because they used to be in the old-table
 ## 	EANHotelID,FieldName,FieldType,FieldValue,TimeStamp
 INSERT INTO log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
-SELECT OLD.EANHotelID,'EANHotelID' AS FieldName,'int' AS FieldType, NULL as FieldValueOld, 'erased record' as FieldValueNew
+SELECT OLD.EANHotelID,'EANHotelID' AS FieldName,'int' AS FieldType, NULL as FieldValueOld, 'stop-sell record' as FieldValueNew
 FROM oldactivepropertylist AS OLD
 LEFT JOIN activepropertylist AS NOW
 ON OLD.EANHotelID=NOW.EANHotelID

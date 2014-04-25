@@ -117,7 +117,7 @@ CREATE TABLE policydescriptionlist_es_es
 
 
 ## PropertyAttributeLink - structure is the same as US version
-DROP TABLE IF EXISTS propertyattributelink_es_es;
+DROP TABLE IF EXISTS pointsofinterestcoordinateslist;
 CREATE TABLE propertyattributelink_es_es
 (
 	EANHotelID INT NOT NULL,

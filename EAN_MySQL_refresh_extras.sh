@@ -131,7 +131,7 @@ $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 
 echo -e "\n"
 tablename="landmark"
 echo "Downloading and unzipping (Landmarks IDs)..."
-wget  -t 30 --no-verbose -r -N -nd https://www.ian.com/affiliatecenter/include/Landmark.zip
+wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Landmark.zip
 unzip -L -o Landmark.zip
 echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
 $CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;"

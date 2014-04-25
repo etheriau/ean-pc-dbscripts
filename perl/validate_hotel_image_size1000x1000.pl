@@ -12,7 +12,7 @@ use DBI;
 # MYSQL CONFIG VARIABLES
 # The hostname, if not specified or specified as '' or 'localhost', will default to a MySQL server running on the local machine using the default for the UNIX socket. 
 # To connect to a MySQL server on the local machine via TCP, you must specify the loopback IP address (127.0.0.1) as the host.
-my $host = '127.0.0.1';
+my $host = 'pincheserver';
 my $port=3306;
 my $user = 'eanuser';
 my $pw = 'Passw@rd1';
@@ -24,10 +24,10 @@ my $dsn = "DBI:mysql:$database:$host:$port";
 my $dbh = DBI->connect($dsn, $user, $pw)  or die "Cannot connect to MySQL server\n";
 
 # PRINT HEADER
-print "EANHotelID|Caption|URL|ThumbnailURL|VerifiedURL|VerifiedThumbnailURL\n";
+print "EANHotelID|URL|Verified\n";
 
 # DEFINE A MySQL QUERY
-my $query = "SELECT EANHotelID,Caption,URL,ThumbnailURL FROM hotelimagelist LIMIT 0,10";
+my $query = "SELECT EANHotelID,URL FROM hotelimagelist ORDER BY EANHotelID;";
 my $ImagesURL = $dbh->prepare($query);
 
 # EXECUTE THE QUERY
@@ -35,17 +35,16 @@ $ImagesURL->execute();
 while(my $RowImagesURL = $ImagesURL->fetchrow_hashref()) {
 # EXTRACT RECORD VALUES
    my $EANHotelID = "$RowImagesURL->{EANHotelID}";
-   my $Caption = "$RowImagesURL->{Caption}";
    my $URL = "$RowImagesURL->{URL}";
 
 # check if images are valid using LWP library
-printf "> $URL\n";
-	my $verifyURL = &img_check(substr($URL, 0, -5) . "z.jpg");
+    my $bigImageURL = substr($URL, 0, -5) . "z.jpg";   
+	my $verifyURL = &img_check($bigImageURL);
 
-# print the result line, only if at least one of the images fail to verify
+# print the result line, only if the URL image (_z size) fail to verify
     if (not($verifyURL)) {
        $URL = substr($URL, 0, -5) . "z.jpg";  
-		printf "$EANHotelID | $Caption | $URL | $verifyURL\n";
+		printf "$EANHotelID | $URL | $verifyURL\n";
 	} # if 
 
 } # while Images URLs in the query

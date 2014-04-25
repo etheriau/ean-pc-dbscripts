@@ -13,12 +13,15 @@ DROP DATABASE IF EXISTS eanextras;
 ## updated from files contain those characters
 CREATE DATABASE eanextras CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-## users permisions
+## users permisions, must run as root to give the SUPER permission
 GRANT ALL ON eanextras.* TO 'eanuser'@'%' IDENTIFIED BY 'Passw@rd1';
 GRANT ALL ON eanextras.* TO 'eanuser'@'localhost' IDENTIFIED BY 'Passw@rd1';
+GRANT SUPER ON *.* to eanuser@'localhost' IDENTIFIED BY 'Passw@rd1';
+FLUSH PRIVILEGES;
 
 ## REQUIRED IN WINDOWS as we do not use STRICT_TRANS_TABLE for the upload process
 SET @@global.sql_mode= '';
+SET GLOBAL sql_mode='';
 
 USE eanextras;
 
@@ -507,6 +510,37 @@ CREATE INDEX idx_supplierpropertyid ON propertysuppliermapping(SupplierPropertyI
 # table to store the allCountries.txt file from http://download.geonames.org/export/dump/
 # will be best to run once with allCountries, then just apply the daily updates
 DROP TABLE IF EXISTS geonames;
+CREATE TABLE geonames
+(
+GeoNameID INT NOT NULL,
+Name VARCHAR(200),
+AsciiName VARCHAR(200),
+AlternateNames TEXT,
+Latitude numeric(9,6),
+Longitude numeric(9,6),
+FeatureClass char(1),
+FeatureCode varchar(10),
+CountryCode  char(2),
+AlternativeCountryCode varchar(60),
+AdminCode1 varchar(20),
+AdminCode2 varchar(80), 
+AdminCode3 varchar(20),
+AdminCode4 varchar(20),
+Population BIGINT,
+Elevation INT,
+Dem INT,
+Timezone varchar(40),
+ModificationDate date,
+TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (GeoNameID)
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+## index by Latitude, Longitude to use for geosearches
+## we add the FeatureCode to the index to spped up filtered searches
+CREATE INDEX geonames_geoloc ON geonames(Latitude, Longitude,FeatureCode);
+## index to speed the usual search by name,country filtered by FeatureClass and code
+CREATE INDEX geonames_fastasciiname ON geonames(AsciiName, CountryCode, FeatureClass, FeatureCode);
+
+DROP TABLE IF EXISTS geo;
 CREATE TABLE geonames
 (
 GeoNameID INT NOT NULL,
