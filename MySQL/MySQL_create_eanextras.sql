@@ -262,184 +262,11 @@ END
 $$
 DELIMITER ;
 
-############################################################
-## STATIC CONTENT FILES
-## All Properties (Venere, Expedia, Vacation Rentals) 
-############################################################
-DROP TABLE IF EXISTS expediaactive;
-CREATE TABLE expediaactive (
-HotelID INT NOT NULL,
-Name VARCHAR(70),
-AirportCode VARCHAR(3),
-Address1 VARCHAR(50),
-Address2 VARCHAR(50),
-Address3 VARCHAR(50),
-City VARCHAR(50),
-StateProvince VARCHAR(50),
-Country VARCHAR(50),
-PostalCode VARCHAR(15),
-Longitude NUMERIC(8,5),
-Latitude NUMERIC(8,5),
-LowRate NUMERIC(19,4),
-HighRate NUMERIC(19,4),
-MarketingLevel INT,
-Confidence INT,
-HotelModified varchar(32),
-PropertyType VARCHAR(3),
-TimeZone VARCHAR(80),
-GMTOffset VARCHAR(6),
-YearPropertyOpened varchar(256),
-YearPropertyRenovated varchar(256),
-NativeCurrency varchar(3),
-NumberOfRooms int,
-NumberOfSuites int,
-NumberOfFloors int,
-CheckInTime varchar(10),
-CheckOutTime varchar(10),
-HasValetParking varchar(1),
-HasContinentalBreakfast varchar(1),
-HasInRoomMovies varchar(1),
-HasSauna varchar(1),
-HasWhirlpool varchar(1),
-HasVoiceMail varchar(1),
-Has24HourSecurity varchar(1),
-HasParkingGarage varchar(1),
-HasElectronicRoomKeys varchar(1),
-HasCoffeeTeaMaker varchar(1),
-HasSafe varchar(1),
-HasVideoCheckOut varchar(1),
-HasRestrictedAccess varchar(1),
-HasInteriorRoomEntrance varchar(1),
-HasExteriorRoomEntrance varchar(1),
-HasCombination varchar(1),
-HasFitnessFacility varchar(1),
-HasGameRoom varchar(1),
-HasTennisCourt varchar(1),
-HasGolfCourse varchar(1),
-HasInHouseDining varchar(1),
-HasInHouseBar varchar(1),
-HasHandicapAccessible varchar(1),
-HasChildrenAllowed varchar(1),
-HasPetsAllowed varchar(1),
-HasTVInRoom varchar(1),
-HasDataPorts varchar(1),
-HasMeetingRooms varchar(1),
-HasBusinessCenter varchar(1),
-HasDryCleaning varchar(1),
-HasIndoorPool varchar(1),
-HasOutdoorPool varchar(1),
-HasNonSmokingRooms varchar(1),
-HasAirportTransportation varchar(1),
-HasAirConditioning varchar(1),
-HasClothingIron varchar(1),
-HasWakeUpService varchar(1),
-HasMiniBarInRoom varchar(1),
-HasRoomService varchar(1),
-HasHairDryer varchar(1),
-HasCarRentDesk varchar(1),
-HasFamilyRooms varchar(1),
-HasKitchen varchar(1),
-HasMap varchar(1),
-PropertyDescription TEXT,
-GDSChainCode  varchar(10),
-GDSChaincodeName  varchar(70),
-DestinationID varchar(60),
-DrivingDirections TEXT,
-NearbyAttractions TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (HotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS vacationrentalsactive;
-CREATE TABLE vacationrentalsactive (
-HotelID INT NOT NULL,
-Name VARCHAR(70),
-AirportCode VARCHAR(3),
-Address1 VARCHAR(50),
-Address2 VARCHAR(50),
-Address3 VARCHAR(50),
-City VARCHAR(50),
-StateProvince VARCHAR(50),
-Country VARCHAR(50),
-PostalCode VARCHAR(15),
-Longitude NUMERIC(8,5),
-Latitude NUMERIC(8,5),
-LowRate NUMERIC(19,4),
-HighRate NUMERIC(19,4),
-MarketingLevel INT,
-Confidence INT,
-HotelModified varchar(32),
-PropertyType VARCHAR(3),
-TimeZone VARCHAR(80),
-GMTOffset VARCHAR(6),
-YearPropertyOpened varchar(256),
-YearPropertyRenovated varchar(256),
-NativeCurrency varchar(3),
-NumberOfRooms int,
-NumberOfSuites int,
-NumberOfFloors int,
-CheckInTime varchar(10),
-CheckOutTime varchar(10),
-HasValetParking varchar(1),
-HasContinentalBreakfast varchar(1),
-HasInRoomMovies varchar(1),
-HasSauna varchar(1),
-HasWhirlpool varchar(1),
-HasVoiceMail varchar(1),
-Has24HourSecurity varchar(1),
-HasParkingGarage varchar(1),
-HasElectronicRoomKeys varchar(1),
-HasCoffeeTeaMaker varchar(1),
-HasSafe varchar(1),
-HasVideoCheckOut varchar(1),
-HasRestrictedAccess varchar(1),
-HasInteriorRoomEntrance varchar(1),
-HasExteriorRoomEntrance varchar(1),
-HasCombination varchar(1),
-HasFitnessFacility varchar(1),
-HasGameRoom varchar(1),
-HasTennisCourt varchar(1),
-HasGolfCourse varchar(1),
-HasInHouseDining varchar(1),
-HasInHouseBar varchar(1),
-HasHandicapAccessible varchar(1),
-HasChildrenAllowed varchar(1),
-HasPetsAllowed varchar(1),
-HasTVInRoom varchar(1),
-HasDataPorts varchar(1),
-HasMeetingRooms varchar(1),
-HasBusinessCenter varchar(1),
-HasDryCleaning varchar(1),
-HasIndoorPool varchar(1),
-HasOutdoorPool varchar(1),
-HasNonSmokingRooms varchar(1),
-HasAirportTransportation varchar(1),
-HasAirConditioning varchar(1),
-HasClothingIron varchar(1),
-HasWakeUpService varchar(1),
-HasMiniBarInRoom varchar(1),
-HasRoomService varchar(1),
-HasHairDryer varchar(1),
-HasCarRentDesk varchar(1),
-HasFamilyRooms varchar(1),
-HasKitchen varchar(1),
-HasMap varchar(1),
-PropertyDescription TEXT,
-GDSChainCode  varchar(10),
-GDSChaincodeName  varchar(70),
-DestinationID varchar(60),
-DrivingDirections TEXT,
-NearbyAttractions TEXT,
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (HotelID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
 
 #########################
 ### EAN Special Files ###
 #########################
-## file based in the file: Destination IDs
+## table based in the file: Destination IDs
 DROP TABLE IF EXISTS destinationids;
 CREATE TABLE destinationids
 (
@@ -452,6 +279,7 @@ Country 	    varchar(3),
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (DestinationID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE INDEX idx_dest_name ON destinationids(Destination);
 
 DROP TABLE IF EXISTS landmark;
 CREATE TABLE landmark
@@ -467,6 +295,10 @@ Type 	    	int,
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (DestinationID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE INDEX idx_landmk_name ON landmark(Name);
+
+## New ActivePropertyList with BusinessModelMask
+## 1-
 
 ## file based in the file: Property ID Cross Reference
 DROP TABLE IF EXISTS propertyidcrossreference;
@@ -540,7 +372,7 @@ CREATE INDEX geonames_geoloc ON geonames(Latitude, Longitude,FeatureCode);
 ## index to speed the usual search by name,country filtered by FeatureClass and code
 CREATE INDEX geonames_fastasciiname ON geonames(AsciiName, CountryCode, FeatureClass, FeatureCode);
 
-DROP TABLE IF EXISTS geo;
+DROP TABLE IF EXISTS geonames;
 CREATE TABLE geonames
 (
 GeoNameID INT NOT NULL,

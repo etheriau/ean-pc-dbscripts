@@ -862,6 +862,14 @@ BEGIN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
       VALUES (nEANHotelID,'PropertyCurrency','VARCHAR(3)',oPropertyCurrency,nPropertyCurrency);
     END IF;
+    IF oSupplierType = 'GDS' AND nSupplierType = 'ESR' THEN
+      INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
+      VALUES (nEANHotelID,'EANHotelID','int','moved to ESR','added record');      
+    END IF;
+    IF oSupplierType = 'ESR' AND nSupplierType = 'GDS' THEN
+      INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
+      VALUES (nEANHotelID,'EANHotelID','int','moved to GDS','stop-sell record');      
+      END IF;
     IF oSupplierType != nSupplierType THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
       VALUES (nEANHotelID,'SupplierType','VARCHAR(3)',oSupplierType,nSupplierType);
