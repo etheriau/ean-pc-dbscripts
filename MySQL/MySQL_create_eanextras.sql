@@ -297,6 +297,28 @@ Type 	    	int,
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 CREATE INDEX idx_landmk_name ON landmark(Name);
 
+#################################################
+#RegionID to DestinationID
+#################################################
+DROP TABLE IF EXISTS regionidtodestinationid;
+CREATE TABLE regionidtodestinationid
+(
+DestinationID 	varchar(50) NOT NULL,
+DestinationINT 	int,
+Destination 	varchar(280),
+DestinationType int,
+RegionID        int NOT NULL,
+RegionName      varchar(255),
+RegionType      varchar(255),
+  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (DestinationID)
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE INDEX idx_dest_namemap ON regionidtodestinationid(RegionID);
+
+
+
+
+
 ## New ActivePropertyList with BusinessModelMask
 ## 1-
 
