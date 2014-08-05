@@ -70,7 +70,7 @@ echo "downloading files done."
 ### Update MySQL Data ###
 ### Parameters that you may need:
 ### If you use LOW_PRIORITY, execution of the LOAD DATA statement is delayed until no other clients are reading from the table.
-CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=${MYSQL_DB}"
+CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=${MYSQL_DB}"
 echo "Uploading Data to MySQL..."
 
 for FILE in ${FILES[@]}
@@ -190,7 +190,7 @@ $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 
 echo -e "\n"
 echo "Verify database against files..."
 ### Verify entries in tables against files ###
-CMD_MYSQL="${MYSQL_DIR}mysqlshow --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST}"
+CMD_MYSQL="${MYSQL_DIR}mysqlshow --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST}"
 $CMD_MYSQL
 
 FILES=(

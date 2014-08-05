@@ -30,8 +30,10 @@ The Partners will need to run:
 -> validate_hotel_image_links.pl - Test the hotel images links are valid.
 -> validate_room_image_links.pl - Test the hotel rooms images links are valid.
 -> train_stations.pl - Use the eanextras database with the geonames table to find train stations close to hotels. Not-working yet.
--> venere_airports.pl - Uses the eanextras database with ourairport data to find nearby airport form EEM properties.
- 
+
+New Geography correct information:
+Our data lack the proper StateProvince for a lot of countries, we created the script:
+-> get_real_address.pl - use the Nominatim API from OpenStreetMap.org to discover the real address of a given GPS point. Currently wired to the activepropertylist but you could use it for any of the tables with latitude & longitude information. 
 
 /MAC - Mac adjusted versions of the scripts
  It include my compiled version of the wget utility that is REQUIRED for this scripts to work.

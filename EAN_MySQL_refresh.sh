@@ -142,7 +142,7 @@ cd ${FILES_DIR}
 
 ### Parameters that you may need:
 ### If you use LOW_PRIORITY, execution of the LOAD DATA statement is delayed until no other clients are reading from the table.
-CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=${MYSQL_DB}"
+CMD_MYSQL="${MYSQL_DIR}mysql  --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=${MYSQL_DB}"
 # for version 5.6.6+ you will need this line instead to use stored credentials
 #CMD_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --local-infile=1 --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=${MYSQL_DB}"
 #
@@ -188,7 +188,7 @@ do
 			echo "Running a backup of ActivePropertyList..."
 			### Run stored procedures as required for extra functionality       ###
 			### you can use this section for your own stuff                     ###
-			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
 			# for version 5.6.6+ you will need this line instead to use stored credentials
 			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_createcopy();"
@@ -208,7 +208,7 @@ do
 			echo "Creating log of changes for ActivePropertyList..."
 			### Run stored procedures as required for extra functionality       ###
 			### you can use this section for your own stuff                     ###
-			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
+			CMDSP_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanprod"
 			# for version 5.6.6+ you will need this line instead to use stored credentials
 			#CMDSP_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanprod"
 			$CMDSP_MYSQL --execute="CALL eanprod.sp_log_addedrecords();"
@@ -227,7 +227,7 @@ echo "Updates done."
 echo "Running Extras ... Stored Procedures..."
 ### Run stored procedures as required for extra functionality       ###
 ### you can use this section for your own stuff                     ###
-CMD_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanextras"
+CMD_MYSQL="${MYSQL_DIR}mysql  --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST} --database=eanextras"
 # for version 5.6.6+ you will need this line instead to use stored credentials
 #CMD_MYSQL="${MYSQL_DIR}mysql --login-path=${MYSQL_LOGINPATH} --default-character-set=utf8 --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --database=eanextras"
 #$CMD_MYSQL --execute="CALL eanextras.sp_fill_fasttextsearch();"
@@ -236,9 +236,9 @@ echo "Extras Stored Procedures done."
 
 echo "Verify database against files..."
 ### Verify entries in tables against files ###
-CMD_MYSQL="${MYSQL_DIR}mysqlshow --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST}"
+CMD_MYSQL="${MYSQL_DIR}mysqlshow --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST}"
 # for version 5.6.6+ you will need this line instead to use stored credentials
-#CMD_MYSQL="${MYSQL_DIR}mysqlshow --login-path=${MYSQL_LOGINPATH} --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --pass=${MYSQL_PASS} --host=${MYSQL_HOST}"
+#CMD_MYSQL="${MYSQL_DIR}mysqlshow --login-path=${MYSQL_LOGINPATH} --count ${MYSQL_DB} --protocol=${MYSQL_PROTOCOL} --port=${MYSQL_PORT} --user=${MYSQL_USER} --password=${MYSQL_PASS} --host=${MYSQL_HOST}"
 $CMD_MYSQL
 
 ### find the amount of records per datafile

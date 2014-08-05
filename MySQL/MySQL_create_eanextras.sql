@@ -320,7 +320,41 @@ CREATE INDEX idx_dest_namemap ON regionidtodestinationid(RegionID);
 
 
 ## New ActivePropertyList with BusinessModelMask
-## 1-
+## 1-pre pay (merchant)
+## 2 = post pay (agency)
+## 3 = pre and post pay hotels (flex/ETP)
+DROP TABLE IF EXISTS activepropertybusinessmodel;
+CREATE TABLE activepropertybusinessmodel
+(
+	EANHotelID INT NOT NULL,
+	SequenceNumber INT,
+	Name VARCHAR(70),
+	Address1 VARCHAR(50),
+	Address2 VARCHAR(50),
+	City VARCHAR(50),
+	StateProvince VARCHAR(2),
+	PostalCode VARCHAR(15),
+	Country VARCHAR(2),
+	Latitude numeric(8,5),
+	Longitude numeric(8,5),
+	AirportCode VARCHAR(3),
+	PropertyCategory INT,
+	PropertyCurrency VARCHAR(3),
+	StarRating numeric(2,1),
+	Confidence INT,
+	SupplierType VARCHAR(3),
+	Location VARCHAR(80),
+	ChainCodeID VARCHAR(5),
+	RegionID INT,
+	HighRate numeric(19,4),
+	LowRate numeric(19,4),
+	CheckInTime VARCHAR(10),
+	CheckOutTime VARCHAR(10),
+	BusinessModelMask INT,
+  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (EANHotelID)
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
 
 ## file based in the file: Property ID Cross Reference
 DROP TABLE IF EXISTS propertyidcrossreference;
