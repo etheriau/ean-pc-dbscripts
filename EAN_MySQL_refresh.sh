@@ -57,8 +57,6 @@ ChainList
 CityCoordinatesList
 CountryList
 DiningDescriptionList
-GDSAttributeList
-GDSPropertyAttributeLink
 HotelImageList
 NeighborhoodCoordinatesList
 ParentRegionList

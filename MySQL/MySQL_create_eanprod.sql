@@ -1,5 +1,5 @@
 ########################################################
-## MySQL_create_eanprod.sql                      v3.7 ##
+## MySQL_create_eanprod.sql                      v3.8 ##
 ## SCRIPT TO GENERATE EAN DATABASE IN MYSQL ENGINE    ##
 ## BE CAREFUL AS IT WILL ERASE THE EXISTING DATABASE  ##
 ## YOU CAN USE SECTIONS OF IT TO RE-CREATE TABLES     ##
@@ -264,39 +264,11 @@ CREATE TABLE propertyattributelink
 	LanguageCode VARCHAR(5),
 	AppendTxt VARCHAR(191),
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-## table so far do not present the same problem as GDSpropertyattributelink
 	PRIMARY KEY (EANHotelID, AttributeID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ## add reverse index to speed up reversed join queries
 CREATE INDEX idx_propertyattributelink_reverse ON propertyattributelink(AttributeID,EANHotelID);
 
-
-
-DROP TABLE IF EXISTS gdsattributelist;
-CREATE TABLE gdsattributelist
-(
-	AttributeID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AttributeDesc VARCHAR(255),
-	Type VARCHAR(15),
-	SubType VARCHAR(15),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (AttributeID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-DROP TABLE IF EXISTS gdspropertyattributelink;
-CREATE TABLE gdspropertyattributelink
-(
-	EANHotelID INT NOT NULL,
-	AttributeID INT NOT NULL,
-	LanguageCode VARCHAR(5),
-	AppendTxt VARCHAR(191),
-  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-## need all those fields to make a uniquekey
-	PRIMARY KEY (EANHotelID, AttributeID)
-) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-## add reverse index to speed up reversed join queries
-CREATE INDEX idx_gdsattributelink_reverse ON propertyattributelink(AttributeID,EANHotelID);
 
 
 ########### Image Data ####################
@@ -974,5 +946,28 @@ BEGIN
 	END WHILE;
 	RETURN input;
 END 
+$$
+DELIMITER ;
+
+#####################################################################
+## REGION_NAME_CLEAN - Eliminate all '(something)' from a string 
+## used to eliminate things like '(type 7)' or '(and vicinity)' from
+## Region Names.
+## EXAMPLE
+## usage: REGION_NAME_CLEAN('Orlando (and vicinity)') -> 'Orlando'
+##
+DROP FUNCTION IF EXISTS REGION_NAME_CLEAN;
+DELIMITER $$
+CREATE FUNCTION REGION_NAME_CLEAN(input VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+	IF (LOCATE('(',input) > 0) THEN
+	   SET input = CONCAT(LEFT(input,LOCATE('(',input)-2),
+	       RIGHT(input,CHAR_LENGTH(input)-LOCATE(')',input))
+	   );
+	END IF;
+  RETURN input;
+END;
 $$
 DELIMITER ;
