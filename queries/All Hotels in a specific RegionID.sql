@@ -1,11 +1,11 @@
 # show all hotels in a given RegionID
 # 6148556 - Champs-Elysees, Paris, France
-select regioncentercoordinateslist.RegionID,regioncentercoordinateslist.RegionName,
+select parentregionlist.RegionID,parentregionlist.RegionNameLong,
 activepropertylist.EANHotelID,activepropertylist.Name,Address1,Address2,City,StateProvince,PostalCode 
-FROM activepropertylist
-JOIN regioneanhotelidmapping 
+FROM parentregionlist
+JOIN regioneanhotelidmapping
+ON parentregionlist.RegionID = regioneanhotelidmapping.RegionID
+JOIN activepropertylist 
 ON activepropertylist.EANHotelID=regioneanhotelidmapping.EANHotelID 
-JOIN regioncentercoordinateslist 
-ON regioneanhotelidmapping.RegionID=regioncentercoordinateslist.RegionID 
-WHERE regioncentercoordinateslist.RegionID = 6148556
+WHERE parentregionlist.RegionID = 6148556
 ORDER BY activepropertylist.EANHotelID;

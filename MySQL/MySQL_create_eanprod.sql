@@ -971,3 +971,46 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+#####################################################################
+## HOTELS_IN_REGION - Return comma delimited list of hotel ids
+## for any given EANRegionID INT value
+# changed the maximum for group_concat len to include all list
+## EXAMPLE
+## usage: HOTELS_IN_REGION(2084) -> '99999,999999,99999,99999,...'
+##
+DROP FUNCTION IF EXISTS HOTELS_IN_REGION;
+DELIMITER $$
+
+CREATE FUNCTION HOTELS_IN_REGION(input INT)
+    RETURNS TEXT
+BEGIN
+    SET SESSION group_concat_max_len = 1000000;
+    SELECT GROUP_CONCAT(EANHotelID)
+    FROM   eanprod.regioneanhotelidmapping
+    WHERE  RegionID = input INTO @MyRetList;
+    RETURN @MyRetList;
+END;
+$$
+DELIMITER ;
+
+
+#####################################################################
+## HOTELS_IN_REGION_COUNT - Return the amt of hotels in a RegionID
+## for any given EANRegionID INT value
+## EXAMPLE
+## usage: HOTELS_IN_REGION_COUNT(2084) -> 125
+##
+DROP FUNCTION IF EXISTS HOTELS_IN_REGION_COUNT;
+DELIMITER $$
+
+CREATE FUNCTION HOTELS_IN_REGION_COUNT(input INT)
+    RETURNS INT
+BEGIN
+    SELECT COUNT(EANHotelID)
+    FROM   eanprod.regioneanhotelidmapping
+    WHERE  RegionID = input INTO @MyRetCnt;
+    RETURN @MyRetCnt;
+END;
+$$
+DELIMITER ;
