@@ -1014,3 +1014,38 @@ BEGIN
 END;
 $$
 DELIMITER ;
+
+#####################################################################
+## TRANSLITERATE - Return the converted version (transliteration)
+## for cleaning accented character and use in searches
+## EXAMPLE
+## usage: TRANSLITERATE(name) -> Name without the accents
+##
+DROP FUNCTION IF EXISTS TRANSLITERATE;
+DELIMITER $$
+CREATE FUNCTION TRANSLITERATE(str TEXT)
+RETURNS text
+LANGUAGE SQL
+DETERMINISTIC
+NO SQL
+SQL SECURITY INVOKER
+COMMENT ''
+BEGIN
+   DECLARE dict_from VARCHAR(255);
+   DECLARE dict_to VARCHAR(255);
+   DECLARE len INTEGER;
+   DECLARE i INTEGER;
+   SET dict_from = 'ÁáâäãÉÊèéëÍÎîíÓÕóôÚúüñÑÇç';
+   SET dict_to   = 'AaaaaEEeeeIIiiOOooUuunNCc';
+   SET len = CHAR_LENGTH(dict_from);
+   SET i = 1;
+   WHILE len >= i DO
+      SET @f = SUBSTR(dict_from, i, 1);
+      SET @t = IF(dict_to IS NULL, '', SUBSTR(dict_to, i, 1));
+      SET str = REPLACE(str, @f, @t);
+      SET i = i + 1;
+   END WHILE;
+   RETURN str;
+END
+$$
+DELIMITER ;
