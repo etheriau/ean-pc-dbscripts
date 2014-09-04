@@ -1,5 +1,5 @@
 ########################################################
-## MySQL_create_eanprod.sql                      v3.8 ##
+## MySQL_create_eanprod.sql                      v4.1 ##
 ## SCRIPT TO GENERATE EAN DATABASE IN MYSQL ENGINE    ##
 ## BE CAREFUL AS IT WILL ERASE THE EXISTING DATABASE  ##
 ## YOU CAN USE SECTIONS OF IT TO RE-CREATE TABLES     ##
@@ -78,7 +78,7 @@ CREATE TABLE activepropertylist
 	Confidence INT,
 	SupplierType VARCHAR(3),
 	Location VARCHAR(80),
-	ChainCodeID VARCHAR(5),
+	ChainCodeID INT,
 	RegionID INT,
 	HighRate numeric(19,4),
 	LowRate numeric(19,4),
@@ -752,7 +752,7 @@ BEGIN
   DECLARE oLatitude,oLongitude NUMERIC(8,5);
   DECLARE oAirportCode,oPropertyCurrency,oSupplierType VARCHAR(3);
   DECLARE oLocation VARCHAR(80);
-  DECLARE oChainCodeID VARCHAR(5);
+  DECLARE oChainCodeID INT;
   DECLARE oCheckInTime,oCheckOutTime VARCHAR(10);
   
   DECLARE nEANHotelID,nPropertyCategory INT;
@@ -763,7 +763,7 @@ BEGIN
   DECLARE nLatitude,nLongitude NUMERIC(8,5);
   DECLARE nAirportCode,nPropertyCurrency,nSupplierType VARCHAR(3);
   DECLARE nLocation VARCHAR(80);
-  DECLARE nChainCodeID VARCHAR(5);
+  DECLARE nChainCodeID INT;
   DECLARE nCheckInTime,nCheckOutTime VARCHAR(10);
   
   DECLARE cur CURSOR FOR SELECT o.EANHotelID,o.Name,o.Address1,o.Address2,o.City,o.StateProvince,o.PostalCode,o.Country,
@@ -836,11 +836,11 @@ BEGIN
     END IF;
     IF oSupplierType = 'GDS' AND nSupplierType = 'ESR' THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
-      VALUES (nEANHotelID,'EANHotelID','int','moved to ESR','added record');      
+      VALUES (nEANHotelID,'EANHotelID','INT','moved to ESR','added record');      
     END IF;
     IF oSupplierType = 'ESR' AND nSupplierType = 'GDS' THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
-      VALUES (nEANHotelID,'EANHotelID','int','moved to GDS','stop-sell record');      
+      VALUES (nEANHotelID,'EANHotelID','INT','moved to GDS','stop-sell record');      
       END IF;
     IF oSupplierType != nSupplierType THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
@@ -852,7 +852,7 @@ BEGIN
     END IF; 
     IF oChainCodeID != nChainCodeID THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
-      VALUES (nEANHotelID,'ChainCodeID','VARCHAR(5)',oChainCodeID,nChainCodeID);
+      VALUES (nEANHotelID,'ChainCodeID','INT',oChainCodeID,nChainCodeID);
     END IF;
     IF oCheckInTime != nCheckInTime THEN
       INSERT INTO eanprod.log_activeproperty_changes (EANHotelID,FieldName,FieldType,FieldValueOld,FieldValueNew)
