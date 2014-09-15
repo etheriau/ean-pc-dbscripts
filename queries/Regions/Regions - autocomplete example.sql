@@ -30,7 +30,7 @@ ON parentregionlist.RegionID = regioncentercoordinateslist.RegionID
 WHERE RegionType='Multi-City (Vicinity)' AND SubClass=''
 
 UNION ALL
-## the City records
+## the City records (includes also the regional)
 SELECT eanprod.REGION_NAME_CLEAN(RegionNameLong) AS 'English',parentregionlist.RegionID AS 'EANRegionID',
        CenterLatitude AS 'Latitude',CenterLongitude AS 'Longitude',
 	   eanprod.HOTELS_IN_REGION_COUNT(parentregionlist.RegionID) AS 'EANHotelIDCount',
@@ -39,7 +39,19 @@ SELECT eanprod.REGION_NAME_CLEAN(RegionNameLong) AS 'English',parentregionlist.R
 FROM eanprod.parentregionlist
 LEFT JOIN eanprod.regioncentercoordinateslist
 ON parentregionlist.RegionID = regioncentercoordinateslist.RegionID
-WHERE parentregionlist.RegionType='City' AND SubClass=''
+WHERE parentregionlist.RegionType='City' AND SubClass IN('','regional')
+
+UNION ALL
+## the Neighborhood records (downtown / neighbor / regional)
+SELECT eanprod.REGION_NAME_CLEAN(RegionNameLong) AS 'English',parentregionlist.RegionID AS 'EANRegionID',
+       CenterLatitude AS 'Latitude',CenterLongitude AS 'Longitude',
+	   eanprod.HOTELS_IN_REGION_COUNT(parentregionlist.RegionID) AS 'EANHotelIDCount',
+	   eanprod.HOTELS_IN_REGION(parentregionlist.RegionID) AS 'EANHotelIDList',
+	   'Cities/Areas' AS 'DisplayType'
+FROM eanprod.parentregionlist
+LEFT JOIN eanprod.regioncentercoordinateslist
+ON parentregionlist.RegionID = regioncentercoordinateslist.RegionID
+WHERE parentregionlist.RegionType='Neighborhood' AND SubClass IN ('downtown','neighbor','regional')
 
 UNION ALL
 ## the Airports records
