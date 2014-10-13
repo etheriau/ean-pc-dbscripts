@@ -17,7 +17,8 @@ The Partners will need to run:
 
 /Queries - Contain multiple queries that show how to relate the data in the database.
 
-/MS-SQL - Script and database creation script. IT ONLY will do the activepropertylist - it is unfinished, but all the working parts are there, partners just need to add the other 33 tables.
+/MS-SQL - Script and database creation script. Only English files are covered by this script. Translated files and the extra functions supplied in the MySQL script set are not yet supported.
+
 /MySQL - all MySQL versions of the scripts including my Server my.cnf configuration file, as some changes will be needed to support proper UTF-8 sorting.
 
 /doc - Documentation that I am currently working on to better explain how to use the database files.
