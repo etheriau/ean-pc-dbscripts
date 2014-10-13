@@ -316,7 +316,19 @@ RegionType      varchar(255),
 CREATE INDEX idx_dest_namemap ON regionidtodestinationid(RegionID);
 
 
-
+#################################################
+# Reverse Engineering to obtain the amount of
+# properties on each DestinationID
+# loaded using Destinations & Landmarks
+#################################################
+DROP TABLE IF EXISTS destinationid_list;
+CREATE TABLE destinationid_list (
+  DestinationID varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  DestinationCNT int(11) DEFAULT NULL,
+  DestinationHotelList TEXT,
+  TimeStamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (DestinationID)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ## New ActivePropertyList with BusinessModelMask

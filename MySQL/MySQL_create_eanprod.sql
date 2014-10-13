@@ -288,7 +288,7 @@ CREATE TABLE hotelimagelist
 	Height INT,
 	ByteSize INT,
 	ThumbnailURL VARCHAR(300),
-	DefaultImage bit,
+	DefaultImage BOOLEAN,
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (URL)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
@@ -915,6 +915,27 @@ END
 $$
 DELIMITER ;
 
+###########
+## This variation give the result as a percentage of similarity
+##
+DROP FUNCTION IF EXISTS LEVENSHTEIN_RATIO;
+DELIMITER $$
+CREATE FUNCTION LEVENSHTEIN_RATIO( s1 text, s2 text )
+RETURNS INT(11)
+DETERMINISTIC
+BEGIN 
+    DECLARE s1_len, s2_len, max_len INT; 
+    SET s1_len = LENGTH(s1), s2_len = LENGTH(s2); 
+    IF s1_len > s2_len THEN  
+      SET max_len = s1_len;  
+    ELSE  
+      SET max_len = s2_len;  
+    END IF; 
+    RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100); 
+END
+$$
+DELIMITER ;
+  
 ##################################################################
 ## CAP_FIRST Formula - Uppercase Just The First Letter
 ## used to normalize data cases
@@ -973,6 +994,51 @@ $$
 DELIMITER ;
 
 #####################################################################
+## REGION_NAME_CHANGE - Replace all '(something)' from a string to '(other)' 
+## used to convert like '(type 7)' or '(and vicinity)' from
+## Region Names to '(area)'
+## EXAMPLE
+## usage: REGION_NAME_CHANGE('Orlando (and vicinity)','(area)') -> 'Orlando (area)'
+##
+DROP FUNCTION IF EXISTS REGION_NAME_CHANGE;
+DELIMITER $$
+CREATE FUNCTION REGION_NAME_CHANGE(input VARCHAR(255), replacestr VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+	IF (LOCATE('(',input) > 0) THEN
+	   SET input = CONCAT(LEFT(input,LOCATE('(',input)-2),' ',replacestr,
+	       RIGHT(input,CHAR_LENGTH(input)-LOCATE(')',input))
+	   );
+	END IF;
+  RETURN input;
+END;
+$$
+DELIMITER ;
+
+#########################################################################
+## REPLACE_ONLY_FIRST -Replace ONLY the first occurence of a string with 
+## the given substring
+##
+## EXAMPLE
+## usage: REPLACE_ONLY_FIRST('Orlando, Florida, USA',',',' (city),') -> 'Oralando (city), FLorida, USA'
+##
+DROP FUNCTION IF EXISTS REPLACE_ONLY_FIRST;
+DELIMITER $$
+CREATE FUNCTION REPLACE_ONLY_FIRST(input VARCHAR(255),findstr VARCHAR(255), replacestr VARCHAR(255))
+RETURNS VARCHAR(255)
+DETERMINISTIC
+BEGIN
+	IF (LOCATE(findstr,input) > 0) THEN
+       SET input = CONCAT(REPLACE(LEFT(input, INSTR(input, findstr)), findstr, replacestr),
+       SUBSTRING(input, INSTR(input, findstr) + 1));
+	END IF;
+  RETURN input;
+END;
+$$
+DELIMITER ;
+
+#####################################################################
 ## HOTELS_IN_REGION - Return comma delimited list of hotel ids
 ## for any given EANRegionID INT value
 # changed the maximum for group_concat len to include all list
@@ -994,6 +1060,88 @@ END;
 $$
 DELIMITER ;
 
+#####################################################################
+## SORT_LIST - sort comma separated substrings with unoptimized bubble sort
+## swap areas TEXT for string compare, INT for numeric compare
+DROP FUNCTION IF EXISTS SORT_LIST;
+DELIMITER $$
+CREATE FUNCTION SORT_LIST(inString TEXT) RETURNS TEXT
+BEGIN
+	DECLARE delim CHAR(1) DEFAULT ','; 
+	DECLARE strings INT DEFAULT 0;
+  	DECLARE forward INT DEFAULT 1;
+  	DECLARE backward INT;
+  	DECLARE remain TEXT;
+  	DECLARE swap1 TEXT;
+  	DECLARE swap2 TEXT;
+  	SET remain = inString;
+  	SET backward = LOCATE(delim, remain);
+  	WHILE backward != 0 DO
+		SET strings = strings + 1;
+    	SET backward = LOCATE(delim, remain);
+    	SET remain = SUBSTRING(remain, backward+1);
+  	END WHILE;
+  	IF strings < 2 THEN RETURN inString; END IF;
+  	REPEAT
+    	SET backward = strings;
+    	REPEAT
+      		SET swap1 = SUBSTRING_INDEX(SUBSTRING_INDEX(inString,delim,backward-1),delim,-1);
+      		SET swap2 = SUBSTRING_INDEX(SUBSTRING_INDEX(inString,delim,backward),delim,-1);
+      		IF  swap1 > swap2 THEN
+        		SET inString = TRIM(BOTH delim FROM CONCAT_WS(delim,SUBSTRING_INDEX(inString,delim,backward-2)
+        			,swap2,swap1,SUBSTRING_INDEX(inString,delim,(backward-strings))));
+      		END IF;
+      		SET backward = backward - 1;
+    	UNTIL backward < 2 END REPEAT;
+    	SET forward = forward +1;
+  	UNTIL forward + 1 > strings
+  	END REPEAT;
+RETURN inString;
+END;
+$$
+DELIMITER ;
+
+#####################################################################
+## SORT_ID_LIST - sort comma separated list of numeric values
+## with unoptimized bubble sort
+## swap areas TEXT for string compare, INT for numeric compare
+DROP FUNCTION IF EXISTS SORT_ID_LIST;
+DELIMITER $$
+CREATE FUNCTION SORT_ID_LIST(inString TEXT) RETURNS TEXT
+BEGIN
+	DECLARE delim CHAR(1) DEFAULT ','; 
+	DECLARE strings INT DEFAULT 0;
+  	DECLARE forward INT DEFAULT 1;
+  	DECLARE backward INT;
+  	DECLARE remain TEXT;
+  	DECLARE swap1 INT;
+  	DECLARE swap2 INT;
+  	SET remain = inString;
+  	SET backward = LOCATE(delim, remain);
+  	WHILE backward != 0 DO
+		SET strings = strings + 1;
+    	SET backward = LOCATE(delim, remain);
+    	SET remain = SUBSTRING(remain, backward+1);
+  	END WHILE;
+  	IF strings < 2 THEN RETURN inString; END IF;
+  	REPEAT
+    	SET backward = strings;
+    	REPEAT
+      		SET swap1 = SUBSTRING_INDEX(SUBSTRING_INDEX(inString,delim,backward-1),delim,-1);
+      		SET swap2 = SUBSTRING_INDEX(SUBSTRING_INDEX(inString,delim,backward),delim,-1);
+      		IF  swap1 > swap2 THEN
+        		SET inString = TRIM(BOTH delim FROM CONCAT_WS(delim,SUBSTRING_INDEX(inString,delim,backward-2)
+        			,swap2,swap1,SUBSTRING_INDEX(inString,delim,(backward-strings))));
+      		END IF;
+      		SET backward = backward - 1;
+    	UNTIL backward < 2 END REPEAT;
+    	SET forward = forward +1;
+  	UNTIL forward + 1 > strings
+  	END REPEAT;
+RETURN inString;
+END;
+$$
+DELIMITER ;
 
 #####################################################################
 ## HOTELS_IN_REGION_COUNT - Return the amt of hotels in a RegionID

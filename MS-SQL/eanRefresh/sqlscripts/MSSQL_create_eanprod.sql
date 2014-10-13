@@ -1,12 +1,13 @@
 /*
 *********************************************************
-** MSSQL_create_eanprod.sql                     v2.8   **
+** MSSQL_create_eanprod.sql                     v2.9   **
 ** SCRIPT TO GENERATE EAN DATABASE IN Microsoft SQL    **
 ** BE CAREFUL AS IT WILL ERASE THE EXISTING DATABASE   **
 ** YOU CAN USE SECTIONS OF IT TO RE-CREATE TABLES      **
 ** WILL CREATE USER: eanuser                           **
 ** table names are lowercase so it will work for all   **
 ** platforms the same.                                 **
+** updated to use NVARCHAR(MAX) instead on NTEXT	   **
 *********************************************************
 */
 USE master;
@@ -206,7 +207,7 @@ CREATE TABLE propertydescriptionlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyDescription NVARCHAR(4000),
+	PropertyDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 ) 
@@ -221,7 +222,7 @@ CREATE TABLE policydescriptionlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PolicyDescription NVARCHAR(4000),
+	PolicyDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -236,7 +237,7 @@ CREATE TABLE recreationdescriptionlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	RecreationDescription NVARCHAR(4000),
+	RecreationDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -251,7 +252,7 @@ CREATE TABLE areaattractionslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	AreaAttractions NVARCHAR(4000),
+	AreaAttractions NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -266,7 +267,7 @@ CREATE TABLE diningdescriptionlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	DiningDescription NVARCHAR(4000),
+	DiningDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -280,7 +281,7 @@ CREATE TABLE spadescriptionlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	SpaDescription NVARCHAR(4000),
+	SpaDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -295,7 +296,7 @@ CREATE TABLE whattoexpectlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	WhatToExpect NVARCHAR(4000),
+	WhatToExpect NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -314,7 +315,7 @@ CREATE TABLE roomtypelist
 	LanguageCode NVARCHAR(5),
 	RoomTypeImage NVARCHAR(256),
 	RoomTypeName NVARCHAR(200),
-	RoomTypeDescription NVARCHAR(4000),
+	RoomTypeDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID, RoomTypeID)
 )
@@ -431,7 +432,7 @@ CREATE TABLE citycoordinateslist
 (
 	RegionID INT NOT NULL,
 	RegionName NVARCHAR(255),
-	Coordinates NVARCHAR(4000),
+	Coordinates NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (RegionID)
 )
@@ -486,7 +487,7 @@ CREATE TABLE neighborhoodcoordinateslist
 (
 	RegionID INT NOT NULL,
 	RegionName NVARCHAR(255),
-	Coordinates NVARCHAR(4000),
+	Coordinates NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (RegionID)
 )
@@ -520,12 +521,7 @@ CREATE TABLE regioneanhotelidmapping
 )
 GO
 
-/*
-********************************************************
-** TABLES ADDED FROM MINORREV=25                      **
-**                                                    **
-********************************************************
-*/
+
 -- use dbo.sysobjects for SQL 2000
 if exists (select * from sys.objects where name = 'propertylocationlist' and type = 'u')
     drop table propertylocationlist
@@ -534,7 +530,7 @@ CREATE TABLE propertylocationlist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyLocationDescription NVARCHAR(4000),
+	PropertyLocationDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -547,7 +543,7 @@ CREATE TABLE propertyamenitieslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyAmenitiesDescription NVARCHAR(4000),
+	PropertyAmenitiesDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -560,7 +556,7 @@ CREATE TABLE propertyroomslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyRoomsDescription NVARCHAR(4000),
+	PropertyRoomsDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -573,7 +569,7 @@ CREATE TABLE propertybusinessamenitieslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyBusinessAmenitiesDescription NVARCHAR(4000),
+	PropertyBusinessAmenitiesDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -586,7 +582,7 @@ CREATE TABLE propertynationalratingslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyNationalRatingsDescription NVARCHAR(4000),
+	PropertyNationalRatingsDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -599,7 +595,7 @@ CREATE TABLE propertyfeeslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyFeesDescription NVARCHAR(4000),
+	PropertyFeesDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -612,7 +608,7 @@ CREATE TABLE propertymandatoryfeeslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyMandatoryFeesDescription NVARCHAR(4000),
+	PropertyMandatoryFeesDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
@@ -625,7 +621,7 @@ CREATE TABLE propertyrenovationslist
 (
 	EANHotelID INT NOT NULL,
 	LanguageCode NVARCHAR(5),
-	PropertyRenovationsDescription NVARCHAR(4000),
+	PropertyRenovationsDescription NVARCHAR(MAX),
     TimeStamp rowversion,
 	PRIMARY KEY (EANHotelID)
 )
