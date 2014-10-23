@@ -139,40 +139,6 @@ $CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE
 echo "erasing old records from ($tablename)..."
 $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
 
-echo -e "\n"
-tablename="expediaactive"
-echo "Downloading and unzipping (Expedia All Active)..."
-wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Hotel_All_Active.zip
-unzip -L -o Hotel_All_Active.zip
-### the files are named with the dates, so let's rename it
-mv -f hotel_all_active*.txt expediaactive.txt
-## needed to strip out some strange characters
-echo "Cleaning up ($tablename.txt)..."
-dos2unix expediaactive.txt
-echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
-$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
-## we need to erase the records, NOT updated today
-echo "erasing old records from ($tablename)..."
-$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
-
-
-echo -e "\n"
-tablename="vacationrentalsactive"
-echo "Downloading and unzipping (Vacation Rentals/Condo All Active)..."
-wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/Condo_All_Active.zip
-unzip -L -o Condo_All_Active.zip
-### the files are named with the dates, so let's rename it
-mv -f condo_all_active*.txt vacationrentalsactive.txt
-## needed to strip out some strange characters
-echo "Cleaning up ($tablename.txt)..."
-dos2unix vacationrentalsactive.txt
-echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
-$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' IGNORE 1 LINES;"
-## we need to erase the records, NOT updated today
-echo "erasing old records from ($tablename)..."
-$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
-
-
 
 ## geonames from http://geonames.org
 echo -e "\n"
