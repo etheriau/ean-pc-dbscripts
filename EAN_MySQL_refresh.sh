@@ -82,6 +82,13 @@ PropertyNationalRatingsList
 PropertyFeesList
 PropertyMandatoryFeesList
 PropertyRenovationsList
+### Special File for Authorized Partners ONLY
+#ActivePropertyBusinessModel
+## <BusinessModelMask> 	<Availability Offered>
+## 1 	Expedia Collect only
+## 2 	Hotel Collect only
+## 3 	Both (ETP)
+##########################
 #
 # To Add a language set, use this as a reference
 #
@@ -108,6 +115,8 @@ PropertyRenovationsList
 #PropertyFeesList_es_ES
 #PropertyMandatoryFeesList_es_ES
 #PropertyRenovationsList_es_ES
+### file for Authorized Partners ONLY
+#ActivePropertyBusinessModel_es_ES
 )
 
 ## home where the process will execute
