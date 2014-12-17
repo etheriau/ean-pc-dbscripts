@@ -104,6 +104,17 @@ $CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 
 
 ### DOWNLOAD SPECIAL FILES SECTIONS
 echo -e "\n"
+tablename="activepropertybusinessmodel"
+echo "Downloading and unzipping (ActivePropertyBusinessModel)..."
+wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/V2/ActivePropertyBusinessModel.zip
+unzip -L -o ActivePropertyBusinessModel.zip
+echo "Uploading ($tablename.txt) to ($MYSQL_DB.$tablename) with REPLACE option..."
+$CMD_MYSQL --execute="LOAD DATA LOCAL INFILE '$tablename.txt' REPLACE INTO TABLE $tablename CHARACTER SET utf8 FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '\"' IGNORE 1 LINES;"
+## we need to erase the records, NOT updated today
+echo "erasing old records from ($tablename)..."
+$CMD_MYSQL --execute="DELETE FROM $tablename WHERE datediff(TimeStamp, now()) < 0;"
+
+echo -e "\n"
 tablename="propertyidcrossreference"
 echo "Downloading and unzipping (PropertyID Cross Reference Report)..."
 wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/PropertyID_Cross_Reference_Report.zip
@@ -164,6 +175,7 @@ airports
 countries
 regions
 openflightsairports
+activepropertybusinessmodel
 propertyidcrossreference
 propertysuppliermapping
 destinationids

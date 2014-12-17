@@ -306,3 +306,18 @@ CREATE TABLE propertyrenovationslist_es_es
   TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+## Business Models for pre-pay & post-pay properties
+DROP TABLE IF EXISTS activepropertybusinessmodel_es_es
+CREATE TABLE activepropertybusinessmodel_es_es 
+(
+  EANHotelID INT NOT NULL,
+  LanguageCode VARCHAR(5),
+  Name VARCHAR(70),
+  Location VARCHAR(80),
+  CheckInTime VARCHAR(10),
+  CheckOutTime VARCHAR(10),
+  BusinessModelMask INT,
+  TimeStamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (EANHotelID)
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;

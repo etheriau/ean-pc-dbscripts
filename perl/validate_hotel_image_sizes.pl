@@ -42,18 +42,20 @@ my $dbh = DBI->connect($dsn, $user, $pw)  or die "Cannot connect to MySQL server
 my @listToTest = ('b','l','s','t','n','g','d','y','z');
 
 # PRINT HEADER
-print "EANHotelID|SizeType|URL|Width|Height\n";
+print "EANHotelID|Caption|DefaultImage|SizeType|URL|Width|Height|ByteSize\n";
 
 # DEFINE A MySQL QUERY
-my $query = "SELECT EANHotelID,URL FROM hotelimagelist ORDER BY EANHotelID;";
+my $query = "SELECT EANHotelID,Caption,DefaultImage,URL FROM hotelimagelist ORDER BY EANHotelID;";
 my $ImagesURL = $dbh->prepare($query);
 
 # EXECUTE THE QUERY
 $ImagesURL->execute();
 while(my $RowImagesURL = $ImagesURL->fetchrow_hashref()) {
 # EXTRACT RECORD VALUES
-   my $EANHotelID = "$RowImagesURL->{EANHotelID}";
-   my $URL = "$RowImagesURL->{URL}";
+   my $EANHotelID   = "$RowImagesURL->{EANHotelID}";
+   my $Caption      = "$RowImagesURL->{Caption}";
+   my $DefaultImage = "$RowImagesURL->{DefaultImage}";
+   my $URL          = "$RowImagesURL->{URL}";
 
 # loop over all possible images sizes
    for my $imagetype_element (@listToTest) {
@@ -71,13 +73,13 @@ while(my $RowImagesURL = $ImagesURL->fetchrow_hashref()) {
          if (is_error($rc)) {
             die "getstore of <$imageURL> failed with HTTP status code: $rc";
          } # error downloading the image
-         # now get the size
+         # get the image size
          ($width, $height) = imgsize('imagetotest.jpg');
+	 # get the filesize of the image
+	 my $filesize = -s 'imagetotest.jpg';
          # print the result line, for URL image
-         printf "$EANHotelID|$imagetype_element|$imageURL|$width|$height\n";
+         printf "$EANHotelID|$Caption|$DefaultImage|$imagetype_element|$imageURL|$width|$height|$filesize\n";
       } # if verified to be there
-
-
 
    } # for all images sizes
 

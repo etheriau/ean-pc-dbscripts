@@ -89,15 +89,3 @@ while(my $RowPetFee = $PetFee->fetchrow_hashref()) {
 
 # END
 
-###############################################################
-# subroutine to check if an image exist at a given URL
-sub img_check {
-	my $url = shift;
-	# get type / length / modification date
-	my ($type, $length, $mod) = head($url);
-  	unless (defined $type) {
-    	return 0;
-  	}
-	return 1;
-} # end sub img_check
-################################################################

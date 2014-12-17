@@ -455,6 +455,44 @@ CREATE TABLE propertyrenovationslist
 	PRIMARY KEY (EANHotelID)
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
+### table to identify pre/post pay (ONLY for authorized partners)
+DROP TABLE IF EXISTS activepropertybusinessmodel;
+CREATE TABLE activepropertybusinessmodel
+(
+	EANHotelID INT NOT NULL,
+	SequenceNumber INT,
+	Name VARCHAR(70),
+	Address1 VARCHAR(50),
+	Address2 VARCHAR(50),
+	City VARCHAR(50),
+	StateProvince VARCHAR(2),
+	PostalCode VARCHAR(15),
+	Country VARCHAR(2),
+	Latitude numeric(8,5),
+	Longitude numeric(8,5),
+	AirportCode VARCHAR(3),
+	PropertyCategory INT,
+	PropertyCurrency VARCHAR(3),
+	StarRating numeric(2,1),
+	Confidence INT,
+	SupplierType VARCHAR(3),
+	Location VARCHAR(80),
+	ChainCodeID INT,
+	RegionID INT,
+	HighRate numeric(19,4),
+	LowRate numeric(19,4),
+	CheckInTime VARCHAR(10),
+	CheckOutTime VARCHAR(10),
+	BusinessModelMask INT,
+  TimeStamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (EANHotelID)
+) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+## index by Latitude, Longitude to use for geosearches
+CREATE INDEX activeproperties_geoloc ON activepropertylist(Latitude, Longitude);
+## index by RegionID to use for Regions searches
+CREATE INDEX activeproperties_regionid ON activepropertylist(RegionID);
+
 
 ##################################################################
 ## STORED PROCEDURE sp_hotels_from_point
