@@ -176,6 +176,13 @@ do
     if [ $FILE = "DiningDescriptionList" ] && [ -f "DiningDescriptionLIst.txt" ]; then
        mv -f DiningDescriptionLIst.txt diningdescriptionlist.txt
     fi
+    # Temporary FIX for "|" inside data
+    if [ $FILE = "ActivePropertyList" ] && [ -f "ActivePropertyList.txt" ]; then
+       sed -i "s/Off Langata | Karen Road/Off Langata - Karen Road/" ActivePropertyList.txt
+    fi
+    if [ $FILE = "ActivePropertyBusinessModel" ] && [ -f "ActivePropertyBusinessModel.txt" ]; then
+       sed -i "s/\"Off Langata | Karen Road\"/Off Langata - Karen Road/" ActivePropertyBusinessModel.txt
+    fi
    	## some integrity tests to avoid processing 'bad' files
    	if [ -n "${CHKSUM_CMD}" ] ; then
    	   CHKSUM_NOW=`$CHKSUM_CMD $FILE.txt | cut -f1 -d' '`

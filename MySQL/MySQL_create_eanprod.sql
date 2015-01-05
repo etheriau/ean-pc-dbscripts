@@ -489,9 +489,9 @@ CREATE TABLE activepropertybusinessmodel
 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 ## index by Latitude, Longitude to use for geosearches
-CREATE INDEX activeproperties_geoloc ON activepropertylist(Latitude, Longitude);
+CREATE INDEX activemodel_geoloc ON activepropertybusinessmodel(Latitude, Longitude);
 ## index by RegionID to use for Regions searches
-CREATE INDEX activeproperties_regionid ON activepropertylist(RegionID);
+CREATE INDEX activemodel_regionid ON activepropertybusinessmodel(RegionID);
 
 
 ##################################################################
