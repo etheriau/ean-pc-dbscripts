@@ -179,7 +179,7 @@ do
     # Temporary FIX for "|" inside data
     if [ $FILE = "ActivePropertyList" ] && [ -f "ActivePropertyList.txt" ]; then
        sed -i "s/Off Langata | Karen Road/Off Langata - Karen Road/" ActivePropertyList.txt
-    fi
+    fi 
     if [ $FILE = "ActivePropertyBusinessModel" ] && [ -f "ActivePropertyBusinessModel.txt" ]; then
        sed -i "s/\"Off Langata | Karen Road\"/Off Langata - Karen Road/" ActivePropertyBusinessModel.txt
     fi
