@@ -170,7 +170,7 @@ do
     ## download the files via HTTP (no need for https), using time-stamping, -nd no host directories
     time=`date +%s`
     sig=`echo -n $APIKEY$APIKEYSECRET$time | md5sum -t | awk '{print $1}'`
-    wget  -t 30 --no-verbose -r -N -nd "http://api.ean.com/ean-services/rs/hotel/v3/files?filename=$FILE&cid=$CID&apiKey=$APIKEY&sig=$sig"
+    wget -O$FILE.zip -t 30 --no-verbose -r -N -nd "http://api.ean.com/ean-services/rs/hotel/v3/files?filename=$FILE&cid=$CID&apiKey=$APIKEY&sig=$sig"
 	## unzip the files, save the exit value to check for errors
 	## BSD does not support same syntax, but there is no need in MAC OS as Linux (unzip -L `find -iname $FILE.zip`)
     unzip -L -o $FILE.zip
