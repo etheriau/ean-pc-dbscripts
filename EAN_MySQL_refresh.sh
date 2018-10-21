@@ -30,6 +30,9 @@ MYSQL_USER=eanuser
 MYSQL_PASS=Passw@rd1
 MYSQL_HOST=localhost
 MYSQL_DB=eanprod
+CID=
+APIKEY=
+APIKEYSECRET=
 # home directory of the user (in our case "eanuser")
 HOME_DIR=/home/eanuser
 # protocol TCP All, SOCKET Unix only, PIPE Windows only, MEMORY Windows only
@@ -165,7 +168,9 @@ do
     	CHKSUM_PREV=0
 	fi
     ## download the files via HTTP (no need for https), using time-stamping, -nd no host directories
-    wget  -t 30 --no-verbose -r -N -nd http://www.ian.com/affiliatecenter/include/V2/$FILE.zip
+    time=`date +%s`
+    sig=`echo -n $APIKEY$APIKEYSECRET$time | md5sum -t | awk '{print $1}'`
+    wget  -t 30 --no-verbose -r -N -nd "http://api.ean.com/ean-services/rs/hotel/v3/files?filename=$FILE&cid=$CID&apiKey=$APIKEY&sig=$sig"
 	## unzip the files, save the exit value to check for errors
 	## BSD does not support same syntax, but there is no need in MAC OS as Linux (unzip -L `find -iname $FILE.zip`)
     unzip -L -o $FILE.zip

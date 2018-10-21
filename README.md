@@ -1,6 +1,15 @@
 ean-pc-dbscripts
 ================
 
+This code was originally all created by Expedia and was in their github
+repository, but it has since been deleted.  This does not have all of the
+updates it had but is the version that was working for me.
+
+This upgrades the libraries to http://comms.ean.com/wUyHk4UQB0000Z5V00m310z
+I've only updated what we use.
+
+
+
 Partner Connect database scripts for Partners to create relational database based on V2 downloadable files.
 -----------------------------------------------------------------------------------------------------------
 
