@@ -53,7 +53,6 @@ LOG_DAYS=30
 FILES=(
 ActivePropertyList
 AirportCoordinatesList
-AliasRegionList
 AreaAttractionsList
 AttributeList
 ChainList
